@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export default async function handler(req, res) {
-  // Povolit CORS
+export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -21,12 +20,9 @@ export default async function handler(req, res) {
     const filePath = path.join(process.cwd(), 'napady.json');
     
     let ideas = [];
-    try {
+    if (fs.existsSync(filePath)) {
       const fileData = fs.readFileSync(filePath, 'utf8');
       ideas = JSON.parse(fileData);
-    } catch (e) {
-      // Soubor neexistuje nebo je prázdný
-      ideas = [];
     }
     
     const newIdea = {
@@ -43,7 +39,6 @@ export default async function handler(req, res) {
     
     res.status(200).json({ success: true, idea: newIdea });
   } catch (error) {
-    console.error('Error:', error);
     res.status(500).json({ error: error.message });
   }
 }
