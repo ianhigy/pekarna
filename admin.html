@@ -135,7 +135,17 @@
     async function loadIdeasFromFile() {
       try {
         const res = await fetch("/api/update-ideas");
-        ideas = await res.json();
+        console.log('Response status:', res.status);
+        console.log('Response headers:', res.headers.get('content-type'));
+        
+        const text = await res.text();
+        console.log('Response text:', text);
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        ideas = JSON.parse(text);
         
         // Přidáme ID a status, pokud chybí
         ideas = ideas.map((idea, index) => ({
@@ -150,7 +160,7 @@
         loadAllTabs();
       } catch (e) {
         console.error('Chyba při načítání nápadů:', e);
-        document.getElementById("pendingTab").innerHTML = '<div class="empty-ideas">Nepodařilo se načíst nápady</div>';
+        document.getElementById("pendingTab").innerHTML = '<div class="empty-ideas">Nepodařilo se načíst nápady. Zkontroluj konzoli (F12).</div>';
       }
     }
 
