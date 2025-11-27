@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Super Pekárna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary:#d4a373; --dark:#2c1a0d; --light:#faf7f2; --accent:#e07a5f; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Open Sans',sans-serif; background:var(--light); color:var(--dark); min-height:100vh; display:flex; flex-direction:column; }
+    header { background:url('https://i.postimg.cc/9Fq9wm9c/super-pekarna.png') center/cover; height:50vh; display:flex; align-items:center; justify-content:center; text-align:center; color:white; }
+    .logo { font-family:'Playfair Display',serif; font-size:5.5rem; text-shadow:4px 4px 15px rgba(0,0,0,0.8); display:none; }
+    main { flex:1; padding:60px 20px; max-width:1300px; margin:0 auto; width:100%; }
+    h2 { text-align:center; font-family:'Playfair Display',serif; font-size:3.2rem; margin-bottom:2rem; color:var(--dark); }
+    .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:35px; }
+    .card { background:white; border-radius:20px; overflow:hidden; box-shadow:0 12px 40px rgba(0,0,0,0.12); transition:transform 0.4s, box-shadow 0.4s; will-change:transform; }
+    .card:hover { transform:translateY(-15px); box-shadow:0 20px 50px rgba(0,0,0,0.18); }
+    .card img { width:100%; height:260px; object-fit:cover; background:#f0f0f0; display:block; }
+    .card-content { padding:25px; }
+    .card h3 { font-family:'Playfair Display',serif; font-size:2rem; margin-bottom:10px; }
+    .rating { color:#f1c40f; font-size:1.6rem; letter-spacing:3px; margin:10px 0; }
+    .date { color:#999; font-size:0.9rem; margin-top:12px; }
+    .empty-message { grid-column:1/-1; text-align:center; padding:60px 20px; background:#fff5f5; border-radius:20px; color:#c0392b; font-size:1.5rem; }
+    
+    .announcement { position:fixed; top:15px; left:50%; transform:translateX(-50%); background:rgba(255, 245, 230, 0.85); backdrop-filter:blur(10px); border:2px solid var(--primary); border-radius:15px; padding:15px 50px 15px 20px; z-index:1000; text-align:center; font-size:1.05rem; box-shadow:0 4px 15px rgba(212,163,115,0.3); max-width:fit-content; }
+    .announcement.hidden { display:none; }
+    .close-btn { position:absolute; top:50%; right:15px; transform:translateY(-50%); background:none; border:none; font-size:1.5rem; color:var(--primary); cursor:pointer; font-weight:bold; line-height:1; transition:color 0.3s, transform 0.2s; }
+    .close-btn:hover { color:var(--accent); transform:translateY(-50%) scale(1.2); }
+    
+    body.has-announcement { padding-top:0; }
+    
+    .contact-title { text-align:center; font-family:'Playfair Display',serif; font-size:2.5rem; margin:80px 0 30px 0; color:var(--dark); }
+    .contact-section { padding:40px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); text-align:center; width:100%; max-width:600px; margin:0 auto; }
+    .form-wrapper { max-width:600px; margin:0 auto; text-align:left; }
+    .form-group { margin-bottom:20px; }
+    .form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark); }
+    .form-group input, .form-group textarea { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; font-family:'Open Sans',sans-serif; transition:border-color 0.3s; }
+    .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--primary); }
+    .form-group textarea { resize:vertical; }
+    .submit-btn { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
+    .submit-btn:hover { background:var(--accent); }
+    .error-msg { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; text-align:left; }
+    .success-msg { color:#27ae60; font-weight:bold; margin-top:10px; padding:10px; background:#e6ffe6; border-radius:8px; display:none; text-align:left; }
+    
+    footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition:none; }
+      .card:hover { transform:none; }
+    }
+  </style>
+</head>
+<body class="has-announcement">
+
+  <div id="announcement" class="announcement" style="border-color: #d4a373; background: rgba(255, 245, 230, 0.85);">
+    <button class="close-btn" onclick="document.getElementById('announcement').classList.add('hidden');" aria-label="Zavřít oznámení">✕</button>
+    🎉 <strong>Novinka:</strong> Vítej na našem novém webu!
+<!--    🎉 <strong>Novinka:</strong> Stabilnější podpora! -->
+  </div>
+
+  <header>
+  </header>
+
+  <main>
+    <h2>Náš Protokol</h2>
+    
+    <div id="productList" class="products"></div>
+
+    <h2 class="contact-title">Máš nápad?</h2>
+    <div class="contact-section">
+      <form class="form-wrapper" id="ideaForm">
+        <div class="form-group">
+          <label>Jméno a příjmení</label>
+          <input type="text" id="name" placeholder="Zadej své jméno" required>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="example@zskuldova.cz" required>
+        </div>
+        <div class="form-group">
+          <label>Nápad</label>
+          <textarea id="idea" placeholder="Jaký máš nápad na nové pečivo?" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Poslat nápad</button>
+      </form>
+      <div id="errorMsg" class="error-msg"></div>
+      <div id="successMsg" class="success-msg"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
+  </footer>
+
+  <script>
+    const defaultImage = 'https://i.postimg.cc/0jYTmNBX/neco-se-nepovedlo.png';
+
+    const products = [
+      {
+        name: "Perníčky",
+        description: "3. Pokus",
+        image: "https://i.postimg.cc/FzCtr6dJ/pernicky.webp",
+        rating: 5,
+        ingredients: "Mouka, Cukr, Vajíčka, Perníčkové koření, Kakao, Mléko, Kypřící prášek",
+        created: "2025-11-26"
+     },
+     {
+        name: "Muffiny",
+        description: "2. Pokus, ale obrázek je z 1. pokusu",
+        image: "https://i.postimg.cc/0NYLMjK2/muffiny.webp",
+        rating: 4,
+        ingredients: "Mouka, Cukr, Vajíčka, Čokoláda, Kakao",
+        created: "2025-11-10"
+      },
+      {
+        name: "Pusinky",
+        description: "",
+        image: "https://i.postimg.cc/wT6JSjpK/pusinky.webp",
+        rating: 3,
+        ingredients: "Bílek z vajíčka, Cukr",
+        created: "Neznámé"
+     },
+     {
+        name: "Jablečný koláč",
+        description: "",
+        image: "https://i.postimg.cc/wvwHM274/jablecny-kolac.webp",
+        rating: 2,
+        ingredients: "Mouka, Vajíčka, Cukr, Jablka a jiné ovoce",
+        created: "Neznámé"
+      },
+      {
+        name: "Tyramisu",
+        description: "2. Pokus",
+        image: "",
+        rating: 2,
+        ingredients: "Mléko, Tvaroh, piškoty, kakao",
+        created: "Neznámé"
+      },
+      {
+        name: "Švestkový koláč",
+        description: "",
+        image: "https://i.postimg.cc/X7RWrp7h/svestkovy-kolac.webp",
+        rating: 3,
+        ingredients: "Mouka, Vajíčka, Cukr, Švestky a jiné ovoce",
+        created: "Neznámé"
+      },
+      {
+        name: "M&M´s Chléb",
+        description: "",
+        image: "https://i.postimg.cc/MZhRpmVx/mams-chleb.webp",
+        rating: 0,
+        ingredients: "Mouka, Vajíčka, Cukr, Bonbóny M&M´s",
+        created: "Neznámé"
+      }
+         ];
+
+    function loadProducts() {
+      const list = document.getElementById("productList");
+      
+      if (!products || products.length === 0) {
+        list.innerHTML = '<div class="empty-message"><h3>Zatím zde není žádné pečivo</h3><p>Přidej pečivo do pole products v kódu!</p></div>';
+        return;
+      }
+
+      const sortedProducts = [...products].sort((a,b) => new Date(b.created) - new Date(a.created));
+
+      const fragment = document.createDocumentFragment();
+      
+      sortedProducts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const imgSrc = p.image || defaultImage;
+        
+        const dateText = p.created === "Neznámé" || !p.created || isNaN(new Date(p.created).getTime())
+          ? "Neznámé"
+          : new Date(p.created).toLocaleDateString("cs-CZ");
+        
+        card.innerHTML = `
+          <img src="${imgSrc}" alt="${p.name}" loading="lazy">
+          <div class="card-content">
+            <h3>${p.name}</h3>
+            <p>${p.description}</p>
+            <div class="rating">${"⭐".repeat(p.rating)}${"☆".repeat(5-p.rating)}</div>
+            <div class="ingredients"><strong>Ingredience:</strong> ${p.ingredients}</div>
+            <div class="date">Přidáno: ${dateText}</div>
+          </div>
+        `;
+        
+        fragment.appendChild(card);
+      });
+      
+      list.appendChild(fragment);
+    }
+
+    document.getElementById("ideaForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const idea = document.getElementById("idea").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+      const successMsg = document.getElementById("successMsg");
+
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
+
+      if (!email.endsWith("@zskuldova.cz")) {
+        errorMsg.innerHTML = "Email musí být školní - použij formát example@zskuldova.cz";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      successMsg.innerHTML = `Díky ${name}! Tvůj nápad "${idea}" jsme zaznamenali.`;
+      successMsg.style.display = "block";
+      
+      document.getElementById("ideaForm").reset();
+      
+      console.log("Nový nápad:", { name, email, idea, created: new Date().toISOString() });
+    });
+
+    loadProducts();
+  </script>
+</body>
+</html>
