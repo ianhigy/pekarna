@@ -56,15 +56,14 @@
     
     .action-buttons { display:flex; gap:10px; margin-top:15px; }
     .action-btn { padding:10px 20px; border:none; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; }
-    .action-btn:disabled { opacity:0.5; cursor:not-allowed; }
     .approve-btn { background:var(--green); color:white; }
-    .approve-btn:hover:not(:disabled) { background:#229954; }
+    .approve-btn:hover { background:#229954; }
     .reject-btn { background:var(--red); color:white; }
-    .reject-btn:hover:not(:disabled) { background:#c0392b; }
+    .reject-btn:hover { background:#c0392b; }
     .restore-btn { background:var(--primary); color:white; }
-    .restore-btn:hover:not(:disabled) { background:var(--accent); }
+    .restore-btn:hover { background:var(--accent); }
     .delete-btn { background:#95a5a6; color:white; }
-    .delete-btn:hover:not(:disabled) { background:#7f8c8d; }
+    .delete-btn:hover { background:#7f8c8d; }
     
     .back-link { text-align:center; margin-top:40px; }
     .back-link a { color:var(--primary); text-decoration:none; font-weight:600; transition:color 0.3s; }
@@ -93,9 +92,9 @@
       <h2>Nové Nápady</h2>
       
       <div class="tab-menu">
-        <button class="tab-btn active" onclick="switchTab(event, 'pending')">Nové</button>
-        <button class="tab-btn" onclick="switchTab(event, 'archive')">Archiv</button>
-        <button class="tab-btn" onclick="switchTab(event, 'approved')">Schváleno</button>
+        <button class="tab-btn active" onclick="switchTab('pending')">Nové</button>
+        <button class="tab-btn" onclick="switchTab('archive')">Archiv</button>
+        <button class="tab-btn" onclick="switchTab('approved')">Schváleno</button>
       </div>
 
       <div id="pendingTab" class="tab-content active"></div>
@@ -131,20 +130,11 @@
         errorMsg.style.display = "block";
       }
     }
-   async function loadIdeasFromFile() {
-     try {
-       const res = await fetch("/api/get-ideas");  // Místo /api/update-ideas
-        console.log('Response status:', res.status);
-        console.log('Response headers:', res.headers.get('content-type'));
-        
-        const text = await res.text();
-        console.log('Response text:', text);
-        
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        
-        ideas = JSON.parse(text);
+
+    async function loadIdeasFromFile() {
+      try {
+        const res = await fetch("napady.json?t=" + Date.now());
+        ideas = await res.json();
         
         // Přidáme ID a status, pokud chybí
         ideas = ideas.map((idea, index) => ({
@@ -159,30 +149,18 @@
         loadAllTabs();
       } catch (e) {
         console.error('Chyba při načítání nápadů:', e);
-        document.getElementById("pendingTab").innerHTML = '<div class="empty-ideas">Nepodařilo se načíst nápady. Zkontroluj konzoli (F12).</div>';
+        document.getElementById("pendingTab").innerHTML = '<div class="empty-ideas">Soubor napady.json není dostupný</div>';
       }
     }
 
     async function saveIdeasToFile() {
-      try {
-        const response = await fetch('/api/update-ideas', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(ideas)
-        });
-        
-        if (!response.ok) {
-          throw new Error('Chyba při ukládání');
-        }
-        
-        console.log('Nápady úspěšně uloženy');
-      } catch (error) {
-        console.error('Chyba při ukládání:', error);
-        alert('Nepodařilo se uložit změny. Zkus to znovu.');
-      }
+      // Tato funkce by v reálném prostředí ukládala do souboru
+      // Pro lokální testování pouze loguje do konzole
+      console.log('Ukládám nápady:', ideas);
+      // V produkčním prostředí by zde byl fetch POST požadavek na server
     }
 
-    function switchTab(event, tab) {
+    function switchTab(tab) {
       currentTab = tab;
       
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -273,40 +251,40 @@
       `).join("");
     }
 
-    async function approveIdea(id) {
+    function approveIdea(id) {
       const idea = ideas.find(i => i.id === id);
       if (idea) {
         idea.status = 'approved';
-        await saveIdeasToFile();
+        saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad schválen:', idea);
       }
     }
 
-    async function rejectIdea(id) {
+    function rejectIdea(id) {
       const idea = ideas.find(i => i.id === id);
       if (idea) {
         idea.status = 'rejected';
-        await saveIdeasToFile();
+        saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad zamítnut:', idea);
       }
     }
 
-    async function restoreIdea(id) {
+    function restoreIdea(id) {
       const idea = ideas.find(i => i.id === id);
       if (idea) {
         idea.status = 'pending';
-        await saveIdeasToFile();
+        saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad obnoven:', idea);
       }
     }
 
-    async function deleteIdea(id) {
+    function deleteIdea(id) {
       if (confirm('Opravdu chcete tento nápad trvale smazat?')) {
         ideas = ideas.filter(i => i.id !== id);
-        await saveIdeasToFile();
+        saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad smazán, ID:', id);
       }
