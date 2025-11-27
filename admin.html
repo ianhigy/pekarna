@@ -56,14 +56,15 @@
     
     .action-buttons { display:flex; gap:10px; margin-top:15px; }
     .action-btn { padding:10px 20px; border:none; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; }
+    .action-btn:disabled { opacity:0.5; cursor:not-allowed; }
     .approve-btn { background:var(--green); color:white; }
-    .approve-btn:hover { background:#229954; }
+    .approve-btn:hover:not(:disabled) { background:#229954; }
     .reject-btn { background:var(--red); color:white; }
-    .reject-btn:hover { background:#c0392b; }
+    .reject-btn:hover:not(:disabled) { background:#c0392b; }
     .restore-btn { background:var(--primary); color:white; }
-    .restore-btn:hover { background:var(--accent); }
+    .restore-btn:hover:not(:disabled) { background:var(--accent); }
     .delete-btn { background:#95a5a6; color:white; }
-    .delete-btn:hover { background:#7f8c8d; }
+    .delete-btn:hover:not(:disabled) { background:#7f8c8d; }
     
     .back-link { text-align:center; margin-top:40px; }
     .back-link a { color:var(--primary); text-decoration:none; font-weight:600; transition:color 0.3s; }
@@ -92,9 +93,9 @@
       <h2>Nové Nápady</h2>
       
       <div class="tab-menu">
-        <button class="tab-btn active" onclick="switchTab('pending')">Nové</button>
-        <button class="tab-btn" onclick="switchTab('archive')">Archiv</button>
-        <button class="tab-btn" onclick="switchTab('approved')">Schváleno</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'pending')">Nové</button>
+        <button class="tab-btn" onclick="switchTab(event, 'archive')">Archiv</button>
+        <button class="tab-btn" onclick="switchTab(event, 'approved')">Schváleno</button>
       </div>
 
       <div id="pendingTab" class="tab-content active"></div>
@@ -133,7 +134,7 @@
 
     async function loadIdeasFromFile() {
       try {
-        const res = await fetch("napady.json?t=" + Date.now());
+        const res = await fetch("/api/update-ideas");
         ideas = await res.json();
         
         // Přidáme ID a status, pokud chybí
@@ -149,18 +150,30 @@
         loadAllTabs();
       } catch (e) {
         console.error('Chyba při načítání nápadů:', e);
-        document.getElementById("pendingTab").innerHTML = '<div class="empty-ideas">Soubor napady.json není dostupný</div>';
+        document.getElementById("pendingTab").innerHTML = '<div class="empty-ideas">Nepodařilo se načíst nápady</div>';
       }
     }
 
     async function saveIdeasToFile() {
-      // Tato funkce by v reálném prostředí ukládala do souboru
-      // Pro lokální testování pouze loguje do konzole
-      console.log('Ukládám nápady:', ideas);
-      // V produkčním prostředí by zde byl fetch POST požadavek na server
+      try {
+        const response = await fetch('/api/update-ideas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(ideas)
+        });
+        
+        if (!response.ok) {
+          throw new Error('Chyba při ukládání');
+        }
+        
+        console.log('Nápady úspěšně uloženy');
+      } catch (error) {
+        console.error('Chyba při ukládání:', error);
+        alert('Nepodařilo se uložit změny. Zkus to znovu.');
+      }
     }
 
-    function switchTab(tab) {
+    function switchTab(event, tab) {
       currentTab = tab;
       
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -251,40 +264,40 @@
       `).join("");
     }
 
-    function approveIdea(id) {
+    async function approveIdea(id) {
       const idea = ideas.find(i => i.id === id);
       if (idea) {
         idea.status = 'approved';
-        saveIdeasToFile();
+        await saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad schválen:', idea);
       }
     }
 
-    function rejectIdea(id) {
+    async function rejectIdea(id) {
       const idea = ideas.find(i => i.id === id);
       if (idea) {
         idea.status = 'rejected';
-        saveIdeasToFile();
+        await saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad zamítnut:', idea);
       }
     }
 
-    function restoreIdea(id) {
+    async function restoreIdea(id) {
       const idea = ideas.find(i => i.id === id);
       if (idea) {
         idea.status = 'pending';
-        saveIdeasToFile();
+        await saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad obnoven:', idea);
       }
     }
 
-    function deleteIdea(id) {
+    async function deleteIdea(id) {
       if (confirm('Opravdu chcete tento nápad trvale smazat?')) {
         ideas = ideas.filter(i => i.id !== id);
-        saveIdeasToFile();
+        await saveIdeasToFile();
         loadAllTabs();
         console.log('Nápad smazán, ID:', id);
       }
