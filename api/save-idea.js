@@ -1,15 +1,6 @@
-import fs from 'fs';
-import path from 'path';
+import { kv } from '@vercel/kv';
 
-export default function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -17,13 +8,7 @@ export default function handler(req, res) {
   try {
     const { name, email, idea } = req.body;
     
-    const filePath = path.join(process.cwd(), 'napady.json');
-    
-    let ideas = [];
-    if (fs.existsSync(filePath)) {
-      const fileData = fs.readFileSync(filePath, 'utf8');
-      ideas = JSON.parse(fileData);
-    }
+    const ideas = await kv.get('ideas') || [];
     
     const newIdea = {
       id: ideas.length > 0 ? Math.max(...ideas.map(i => i.id)) + 1 : 1,
@@ -35,10 +20,10 @@ export default function handler(req, res) {
     };
     
     ideas.push(newIdea);
-    fs.writeFileSync(filePath, JSON.stringify(ideas, null, 2));
+    await kv.set('ideas', ideas);
     
-    res.status(200).json({ success: true, idea: newIdea });
+    return res.status(200).json({ success: true, idea: newIdea });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 }
