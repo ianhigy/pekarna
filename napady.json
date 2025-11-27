@@ -1,18 +1,10 @@
 [
   {
     "id": 1,
-    "name": "Jan Novák",
-    "email": "jan.novak@zskuldova.cz",
-    "idea": "Co takhle croissanty s čokoládou?",
-    "created": "2025-11-20T10:30:00.000Z",
+    "name": "Test Uživatel",
+    "email": "test@zskuldova.cz",
+    "idea": "Testovací nápad na nové pečivo",
+    "created": "2025-11-27T10:00:00.000Z",
     "status": "pending"
-  },
-  {
-    "id": 2,
-    "name": "Petra Svobodová",
-    "email": "petra.svobodova@zskuldova.cz",
-    "idea": "Bagety s česnekem a bylinkami by byly super!",
-    "created": "2025-11-22T14:15:00.000Z",
-    "status": "approved"
   }
 ]
