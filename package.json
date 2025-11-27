@@ -1,3 +1,1 @@
-{
-  "type": "module"
-}
+echo '{"type": "module"}' > package.json
