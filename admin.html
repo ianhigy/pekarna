@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="cs">
 <head>
   <meta charset="UTF-8">
@@ -12,35 +11,35 @@
     :root { --primary:#d4a373; --dark:#2c1a0d; --light:#faf7f2; }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Open Sans',sans-serif; background:var(--light); color:var(--dark); min-height:100vh; display:flex; flex-direction:column; }
+    
+    header { background:url('super-pekarna.png') center/cover; height:40vh; display:flex; align-items:center; justify-content:center; text-align:center; color:white; }
+    main { flex:1; padding:60px 20px; max-width:1300px; margin:0 auto; width:100%; }
+    h2 { text-align:center; font-family:'Playfair Display',serif; font-size:3.2rem; margin-bottom:2rem; color:var(--dark); }
 
-```
-header { background:url('super-pekarna.png') center/cover; height:40vh; display:flex; align-items:center; justify-content:center; text-align:center; color:white; }
-main { flex:1; padding:60px 20px; max-width:1300px; margin:0 auto; width:100%; }
-h2 { text-align:center; font-family:'Playfair Display',serif; font-size:3.2rem; margin-bottom:2rem; color:var(--dark); }
+    .admin-section { padding:40px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); width:100%; max-width:600px; margin:0 auto; }
+    .form-group { margin-bottom:20px; }
+    .form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark); }
+    .form-group input { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; transition:border-color 0.3s; }
+    .form-group input:focus { outline:none; border-color:var(--primary); }
+    .login-btn { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
+    .login-btn:hover { background:#c28b55; }
 
-.admin-section { padding:40px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); width:100%; max-width:600px; margin:0 auto; }
-.form-group { margin-bottom:20px; }
-.form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark); }
-.form-group input { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; transition:border-color 0.3s; }
-.form-group input:focus { outline:none; border-color:var(--primary); }
-.login-btn { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
-.login-btn:hover { background:#c28b55; }
+    .error { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; }
 
-.error { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; }
+    .ideas-section { display:none; margin-top:50px; }
 
-.ideas-section { display:none; margin-top:50px; }
+    .idea-item { background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:15px; border-left:4px solid var(--primary); position:relative; }
+    .idea-item p { margin:8px 0; line-height:1.6; }
+    .idea-name { font-weight:600; color:var(--dark); font-size:1.1rem; }
+    .idea-email { font-size:0.9rem; color:#666; }
+    .idea-text { margin-top:10px; color:var(--dark); font-style:italic; }
+    .idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
+    .empty-ideas { text-align:center; padding:30px; color:#999; }
 
-.idea-item { background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:15px; border-left:4px solid var(--primary); position:relative; }
-.idea-item p { margin:8px 0; line-height:1.6; }
-.idea-name { font-weight:600; color:var(--dark); font-size:1.1rem; }
-.idea-email { font-size:0.9rem; color:#666; }
-.idea-text { margin-top:10px; color:var(--dark); font-style:italic; }
-.idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
-.empty-ideas { text-align:center; padding:30px; color:#999; }
+    footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; margin-top:auto; }
 
-footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; margin-top:auto; }
-```
-
+    .logout-btn { margin-top:20px; padding:10px 15px; background:#c0392b; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; }
+    .logout-btn:hover { background:#a93226; }
   </style>
 </head>
 <body>
@@ -61,6 +60,9 @@ footer { background:var(--dark); color:#eee; text-align:center; padding:30px; fo
   <div id="ideasSection" class="ideas-section">
     <h2>Nové Nápady</h2>
     <div id="pendingTab"></div>
+    <div style="text-align:center;">
+      <button class="logout-btn" onclick="logout()">Odhlásit se</button>
+    </div>
   </div>
 
   <div style="text-align:center; margin-top:40px;">
@@ -100,6 +102,13 @@ footer { background:var(--dark); color:#eee; text-align:center; padding:30px; fo
     }
   }
 
+  function logout() {
+    localStorage.removeItem("adminLogged");
+    document.getElementById("ideasSection").style.display = "none";
+    document.querySelector(".admin-section").style.display = "block";
+    document.getElementById("password").value = "";
+  }
+
   /* ====== GOOGLE SHEETS NAČÍTÁNÍ (CSV) ====== */
   async function loadIdeasFromGoogleSheets() {
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
@@ -116,7 +125,6 @@ footer { background:var(--dark); color:#eee; text-align:center; padding:30px; fo
         return;
       }
 
-      // Přeskočit hlavičku
       const items = rows.slice(1).filter(r => r[0].trim() !== "");
 
       list.innerHTML = items.map(row => {
