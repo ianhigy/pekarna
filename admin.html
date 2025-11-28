@@ -1,135 +1,86 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Super Pekárna</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root { --primary:#d4a373; --dark:#2c1a0d; --light:#faf7f2; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Open Sans',sans-serif; background:var(--light); color:var(--dark); min-height:100vh; display:flex; flex-direction:column; }
-    
-    header { background:url('super-pekarna.png') center/cover; height:40vh; display:flex; align-items:center; justify-content:center; text-align:center; color:white; }
-    main { flex:1; padding:60px 20px; max-width:1300px; margin:0 auto; width:100%; }
-    h2 { text-align:center; font-family:'Playfair Display',serif; font-size:3.2rem; margin-bottom:2rem; color:var(--dark); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin – Nápady</title>
 
-    .admin-section { padding:40px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); width:100%; max-width:600px; margin:0 auto; }
-    .form-group { margin-bottom:20px; }
-    .form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark); }
-    .form-group input { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; transition:border-color 0.3s; }
-    .form-group input:focus { outline:none; border-color:var(--primary); }
-    .login-btn { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
-    .login-btn:hover { background:#c28b55; }
+    <style>
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
 
-    .error { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; }
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
 
-    .ideas-section { display:none; margin-top:50px; }
+        .idea {
+            background: #ffffff10;
+            border: 1px solid #ffffff20;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(6px);
+        }
 
-    .idea-item { background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:15px; border-left:4px solid var(--primary); position:relative; }
-    .idea-item p { margin:8px 0; line-height:1.6; }
-    .idea-name { font-weight:600; color:var(--dark); font-size:1.1rem; }
-    .idea-email { font-size:0.9rem; color:#666; }
-    .idea-text { margin-top:10px; color:var(--dark); font-style:italic; }
-    .idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
-    .empty-ideas { text-align:center; padding:30px; color:#999; }
+        .idea-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
 
-    footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; margin-top:auto; }
-  </style>
+        .idea-email,
+        .idea-date {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body>
 
-<header></header>
+<h1>Nápady uživatelů</h1>
 
-<main>
-  <div class="admin-section">
-    <h2 style="margin-bottom:20px; font-size:2rem;">Přihlášení</h2>
-    <div class="form-group">
-      <label>Heslo</label>
-      <input type="password" id="password" placeholder="Zadej heslo" required>
-    </div>
-    <button class="login-btn" onclick="checkPassword()">Přihlásit se</button>
-    <div id="error" class="error"></div>
-  </div>
-
-  <div id="ideasSection" class="ideas-section">
-    <h2>Nové Nápady</h2>
-    <div id="pendingTab"></div>
-  </div>
-
-  <div style="text-align:center; margin-top:40px;">
-    <a href="index.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Zpět na hlavní stránku</a>
-  </div>
-</main>
-
-<footer>
-  <p>© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
-</footer>
+<div id="ideasContainer">Načítám data...</div>
 
 <script>
-  const PASSWORD = "MojeHeslo123";
+async function loadIdeas() {
+    // TVŮJ CSV ODKAZ
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
 
-  /* ===== AUTOLOGIN ===== */
-  window.onload = () => {
-    if (localStorage.getItem("adminLogged") === "true") {
-      document.querySelector(".admin-section").style.display = "none";
-      document.getElementById("ideasSection").style.display = "block";
-      loadIdeasFromGoogleSheets();
-    }
-  };
+    const response = await fetch(csvUrl);
+    const csvText = await response.text();
 
-  function checkPassword() {
-    const pass = document.getElementById("password").value;
-    const errorMsg = document.getElementById("error");
+    const rows = csvText.split("\n").map(r => r.split(","));
+    const container = document.getElementById("ideasContainer");
+    container.innerHTML = "";
 
-    if (pass === PASSWORD) {
-      localStorage.setItem("adminLogged", "true");
-      document.querySelector(".admin-section").style.display = "none";
-      document.getElementById("ideasSection").style.display = "block";
-      errorMsg.style.display = "none";
-      loadIdeasFromGoogleSheets();
-    } else {
-      errorMsg.textContent = "Špatné heslo!";
-      errorMsg.style.display = "block";
-    }
-  }
+    // Přeskočit hlavičku
+    rows.slice(1).forEach(row => {
+        if (row.length < 4) return;
 
-  /* ====== GOOGLE SHEETS NAČÍTÁNÍ (CSV) ====== */
-  async function loadIdeasFromGoogleSheets() {
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
+        const date = row[0];
+        const email = row[1];
+        const name = row[2];
+        const idea = row[3];
 
-    try {
-      const response = await fetch(url);
-      const csv = await response.text();
+        // ignorovat prázdné řádky
+        if (!idea || idea.trim() === "") return;
 
-      const rows = csv.split("\n").map(r => r.split(","));
-      const list = document.getElementById("pendingTab");
+        container.innerHTML += `
+            <div class="idea">
+                <div class="idea-title">${idea}</div>
+                <div class="idea-email">Autor: ${name} (${email})</div>
+                <div class="idea-date">Odesláno: ${date}</div>
+            </div>
+        `;
+    });
+}
 
-      if (rows.length <= 1) {
-        list.innerHTML = '<div class="empty-ideas">Žádné nové nápady</div>';
-        return;
-      }
-
-      // Přeskočit hlavičku
-      const items = rows.slice(1).filter(r => r[0].trim() !== "");
-
-      list.innerHTML = items.map(r => `
-        <div class="idea-item">
-          <p class="idea-name">${r[1] || "Neznámý"}</p>
-          <p class="idea-email">${r[2] || ""}</p>
-          <p class="idea-text">"${r[0]}"</p>
-          <p class="idea-date">${r[3] ? "Datum: " + r[3] : ""}</p>
-        </div>
-      `).join("");
-
-    } catch (err) {
-      console.error(err);
-      document.getElementById("pendingTab").innerHTML =
-        '<div class="empty-ideas">Chyba načítání Google Formuláře</div>';
-    }
-  }
+loadIdeas();
 </script>
 
 </body>
