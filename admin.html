@@ -36,6 +36,11 @@
     .idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
     .empty-ideas { text-align:center; padding:30px; color:#999; }
 
+    .show-more-btn { width:100%; max-width:600px; margin:20px auto; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; display:block; }
+    .show-more-btn:hover { background:#c28b55; }
+    .older-ideas { display:none; margin-top:20px; }
+    .older-ideas.show { display:block; }
+
     footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; margin-top:auto; }
   </style>
 </head>
@@ -57,6 +62,8 @@
   <div id="ideasSection" class="ideas-section">
     <h2>Nové Nápady</h2>
     <div id="pendingTab"></div>
+    <button id="showMoreBtn" class="show-more-btn" onclick="toggleOlderIdeas()" style="display:none;">Zobrazit více</button>
+    <div id="olderIdeas" class="older-ideas"></div>
   </div>
 
   <div style="text-align:center; margin-top:40px;">
@@ -95,6 +102,35 @@
     }
   }
 
+  function toggleOlderIdeas() {
+    const olderIdeas = document.getElementById("olderIdeas");
+    const btn = document.getElementById("showMoreBtn");
+    
+    olderIdeas.classList.toggle("show");
+    
+    if (olderIdeas.classList.contains("show")) {
+      btn.textContent = "Skrýt";
+    } else {
+      btn.textContent = "Zobrazit více";
+    }
+  }
+
+  function createIdeaHTML(row) {
+    const datum = row[0] || "";
+    const nazev = row[1] || "Neznámý";
+    const email = row[2] || "";
+    const popis = row[3] || "";
+
+    return `
+      <div class="idea-item">
+        <p class="idea-name">${nazev}</p>
+        <p class="idea-email">${email}</p>
+        <p class="idea-text">"${popis}"</p>
+        <p class="idea-date">${datum ? "Datum: " + datum : ""}</p>
+      </div>
+    `;
+  }
+
   async function loadIdeasFromGoogleSheets() {
     const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
 
@@ -104,29 +140,29 @@
 
       const rows = csv.split("\n").map(r => r.split(","));
       const list = document.getElementById("pendingTab");
+      const olderList = document.getElementById("olderIdeas");
+      const showMoreBtn = document.getElementById("showMoreBtn");
 
       if (rows.length <= 1) {
         list.innerHTML = '<div class="empty-ideas">Žádné nové nápady</div>';
+        showMoreBtn.style.display = "none";
         return;
       }
 
       const items = rows.slice(1).filter(r => r[0].trim() !== "");
 
-      list.innerHTML = items.map(row => {
-        const datum = row[0] || "";
-        const nazev = row[1] || "Neznámý";
-        const email = row[2] || "";
-        const popis = row[3] || "";
+      // Zobrazit prvních 5
+      const recentItems = items.slice(0, 5);
+      list.innerHTML = recentItems.map(row => createIdeaHTML(row)).join("");
 
-        return `
-          <div class="idea-item">
-            <p class="idea-name">${nazev}</p>
-            <p class="idea-email">${email}</p>
-            <p class="idea-text">"${popis}"</p>
-            <p class="idea-date">${datum ? "Datum: " + datum : ""}</p>
-          </div>
-        `;
-      }).join("");
+      // Starší nápady (od 6. dál)
+      const olderItems = items.slice(5);
+      if (olderItems.length > 0) {
+        olderList.innerHTML = olderItems.map(row => createIdeaHTML(row)).join("");
+        showMoreBtn.style.display = "block";
+      } else {
+        showMoreBtn.style.display = "none";
+      }
 
     } catch (err) {
       console.error(err);
