@@ -34,16 +34,8 @@
     
     .contact-title { text-align:center; font-family:'Playfair Display',serif; font-size:2.5rem; margin:80px 0 30px 0; color:var(--dark); }
     .contact-section { padding:40px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); text-align:center; width:100%; max-width:600px; margin:0 auto; }
-    .form-wrapper { max-width:600px; margin:0 auto; text-align:left; }
-    .form-group { margin-bottom:20px; }
-    .form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark); }
-    .form-group input, .form-group textarea { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; font-family:'Open Sans',sans-serif; transition:border-color 0.3s; }
-    .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--primary); }
-    .form-group textarea { resize:vertical; }
-    .submit-btn { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
-    .submit-btn:hover { background:var(--accent); }
-    .error-msg { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; text-align:left; }
-    .success-msg { color:#27ae60; font-weight:bold; margin-top:10px; padding:10px; background:#e6ffe6; border-radius:8px; display:none; text-align:left; }
+    .submit-btn { display:inline-block; padding:18px 40px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1.1rem; font-weight:bold; cursor:pointer; transition:background 0.3s, transform 0.2s; text-decoration:none; }
+    .submit-btn:hover { background:var(--accent); transform:scale(1.05); }
     
     footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; }
     
@@ -58,7 +50,6 @@
   <div id="announcement" class="announcement" style="border-color: #d4a373; background: rgba(255, 245, 230, 0.85);">
     <button class="close-btn" onclick="document.getElementById('announcement').classList.add('hidden');" aria-label="Zavřít oznámení">✕</button>
     🎉 <strong>Novinka:</strong> Nový web je tu!
-<!--    🎉 <strong>Novinka:</strong> Stabilnější podpora! -->
   </div>
 
   <header>
@@ -71,23 +62,8 @@
 
     <h2 class="contact-title">Máš nápad?</h2>
     <div class="contact-section">
-      <form class="form-wrapper" id="ideaForm">
-        <div class="form-group">
-          <label>Jméno a příjmení</label>
-          <input type="text" id="name" placeholder="Zadej své jméno" required>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="email" placeholder="example@zskuldova.cz" required>
-        </div>
-        <div class="form-group">
-          <label>Nápad</label>
-          <textarea id="idea" placeholder="Jaký máš nápad na nové pečivo?" rows="5" required></textarea>
-        </div>
-        <button type="submit" class="submit-btn">Poslat nápad</button>
-      </form>
-      <div id="errorMsg" class="error-msg"></div>
-      <div id="successMsg" class="success-msg"></div>
+      <p style="margin-bottom: 25px; font-size: 1.1rem; color: var(--dark);">Sdílej s námi své nápady na nové pečivo!</p>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScbPsW00LGvBiAQKL9O_VjiR15jby58UTqIkpDt3sW4rNRbtA/viewform?usp=sharing&ouid=101182095751355125326" target="_blank" rel="noopener noreferrer" class="submit-btn">Přejít na formulář s nápady</a>
     </div>
   </main>
 
@@ -163,7 +139,7 @@
         ingredients: "Mouka, Vajíčka, Cukr, Bonbóny M&M´s",
         created: "Neznámé"
       }
-         ];
+    ];
 
     function loadProducts() {
       const list = document.getElementById("productList");
@@ -203,32 +179,6 @@
       
       list.appendChild(fragment);
     }
-
-    document.getElementById("ideaForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const idea = document.getElementById("idea").value.trim();
-      const errorMsg = document.getElementById("errorMsg");
-      const successMsg = document.getElementById("successMsg");
-
-      errorMsg.style.display = "none";
-      successMsg.style.display = "none";
-
-      if (!email.endsWith("@zskuldova.cz")) {
-        errorMsg.innerHTML = "Email musí být školní - použij formát example@zskuldova.cz";
-        errorMsg.style.display = "block";
-        return;
-      }
-
-      successMsg.innerHTML = `Díky ${name}! Tvůj nápad "${idea}" jsme zaznamenali.`;
-      successMsg.style.display = "block";
-      
-      document.getElementById("ideaForm").reset();
-      
-      console.log("Nový nápad:", { name, email, idea, created: new Date().toISOString() });
-    });
 
     loadProducts();
   </script>
