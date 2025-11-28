@@ -8,28 +8,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root { --primary:#d4a373; --dark:#2c1a0d; --light:#faf7f2; --accent:#e07a5f; --green:#27ae60; --red:#e74c3c; }
+    :root { --primary:#d4a373; --dark:#2c1a0d; --light:#faf7f2; }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Open Sans',sans-serif; background:var(--light); color:var(--dark); min-height:100vh; display:flex; flex-direction:column; }
     
     header { background:url('super-pekarna.png') center/cover; height:40vh; display:flex; align-items:center; justify-content:center; text-align:center; color:white; }
-    .logo { font-family:'Playfair Display',serif; font-size:4rem; text-shadow:4px 4px 15px rgba(0,0,0,0.8); display:none; }
-    
     main { flex:1; padding:60px 20px; max-width:1300px; margin:0 auto; width:100%; }
     h2 { text-align:center; font-family:'Playfair Display',serif; font-size:3.2rem; margin-bottom:2rem; color:var(--dark); }
-    
+
     .admin-section { padding:40px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); width:100%; max-width:600px; margin:0 auto; }
-    
     .form-group { margin-bottom:20px; }
     .form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark); }
-    .form-group input { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; font-family:'Open Sans',sans-serif; transition:border-color 0.3s; }
+    .form-group input { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; transition:border-color 0.3s; }
     .form-group input:focus { outline:none; border-color:var(--primary); }
-    
     .login-btn { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
-    .login-btn:hover { background:var(--accent); }
-    
+    .login-btn:hover { background:#c28b55; }
+
     .error { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; }
-    
+
     .ideas-section { display:none; margin-top:50px; }
 
     .idea-item { background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:15px; border-left:4px solid var(--primary); position:relative; }
@@ -40,134 +36,110 @@
     .idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
     .empty-ideas { text-align:center; padding:30px; color:#999; }
 
-    .action-buttons { display:flex; gap:10px; margin-top:15px; }
-    .action-btn { padding:10px 20px; border:none; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; }
-    .approve-btn { background:var(--green); color:white; }
-    .approve-btn:hover { background:#229954; }
-    .reject-btn { background:var(--red); color:white; }
-    .reject-btn:hover { background:#c0392b; }
-
     footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; margin-top:auto; }
   </style>
 </head>
 <body>
 
-  <header></header>
+<header></header>
 
-  <main>
-    <div class="admin-section">
-      <h2 style="margin-bottom:20px; font-size:2rem;">Přihlášení</h2>
-      <div class="form-group">
-        <label>Heslo</label>
-        <input type="password" id="password" placeholder="Zadej heslo" required>
+<main>
+  <div class="admin-section">
+    <h2 style="margin-bottom:20px; font-size:2rem;">Přihlášení</h2>
+    <div class="form-group">
+      <label>Heslo</label>
+      <input type="password" id="password" placeholder="Zadej heslo" required>
+    </div>
+    <button class="login-btn" onclick="checkPassword()">Přihlásit se</button>
+    <div id="error" class="error"></div>
+  </div>
+
+  <div id="ideasSection" class="ideas-section">
+    <h2>Nové Nápady</h2>
+    <div id="pendingTab"></div>
+  </div>
+
+  <div style="text-align:center; margin-top:40px;">
+    <a href="index.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Zpět na hlavní stránku</a>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
+</footer>
+
+<script>
+  const PASSWORD = "MojeHeslo123";
+  let ideas = [];
+
+  /* ===== AUTOLOGIN ===== */
+  window.onload = () => {
+    if (localStorage.getItem("adminLogged") === "true") {
+      document.querySelector(".admin-section").style.display = "none";
+      document.getElementById("ideasSection").style.display = "block";
+      loadIdeasFromFile();
+    }
+  };
+
+  function checkPassword() {
+    const pass = document.getElementById("password").value;
+    const errorMsg = document.getElementById("error");
+
+    if (pass === PASSWORD) {
+      localStorage.setItem("adminLogged", "true");
+      document.querySelector(".admin-section").style.display = "none";
+      document.getElementById("ideasSection").style.display = "block";
+      errorMsg.style.display = "none";
+      loadIdeasFromFile();
+    } else {
+      errorMsg.textContent = "Špatné heslo!";
+      errorMsg.style.display = "block";
+    }
+  }
+
+  async function loadIdeasFromFile() {
+    try {
+      const res = await fetch("napady.json?t=" + Date.now());
+      ideas = await res.json();
+
+      ideas = ideas.map((idea, index) => ({
+        id: idea.id || index + 1,
+        name: idea.name,
+        email: idea.email,
+        idea: idea.idea,
+        created: idea.created,
+        status: idea.status || "pending"
+      }));
+
+      loadPending();
+    } catch (e) {
+      console.error("Chyba:", e);
+      document.getElementById("pendingTab").innerHTML =
+        '<div class="empty-ideas">Soubor napady.json není dostupný</div>';
+    }
+  }
+
+  function loadPending() {
+    const list = document.getElementById("pendingTab");
+    const pending = ideas.filter(i => i.status === "pending");
+
+    if (pending.length === 0) {
+      list.innerHTML = '<div class="empty-ideas">Žádné nové nápady</div>';
+      return;
+    }
+
+    pending.sort((a,b) => new Date(b.created) - new Date(a.created));
+
+    list.innerHTML = pending.map(idea => `
+      <div class="idea-item">
+        <p class="idea-name">${idea.name}</p>
+        <p class="idea-email">${idea.email}</p>
+        <p class="idea-text">"${idea.idea}"</p>
+        <p class="idea-date">Přidáno: ${new Date(idea.created).toLocaleDateString("cs-CZ")}</p>
       </div>
-      <button class="login-btn" onclick="checkPassword()">Přihlásit se</button>
-      <div id="error" class="error"></div>
-    </div>
+    `).join("");
+  }
+</script>
 
-    <div id="ideasSection" class="ideas-section">
-      <h2>Nové Nápady</h2>
-      <div id="pendingTab"></div>
-    </div>
-
-    <div class="back-link" style="text-align:center; margin-top:40px;">
-      <a href="index.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Zpět na hlavní stránku</a>
-    </div>
-  </main>
-
-  <footer>
-    <p>© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
-  </footer>
-
-  <script>
-    const PASSWORD = "MojeHeslo123";
-    let ideas = [];
-
-    /* === AUTOLOGIN === */
-    window.onload = () => {
-      if (localStorage.getItem("adminLogged") === "true") {
-        document.querySelector(".admin-section").style.display = "none";
-        document.getElementById("ideasSection").style.display = "block";
-        loadIdeasFromFile();
-      }
-    };
-
-    function checkPassword() {
-      const pass = document.getElementById("password").value;
-      const errorMsg = document.getElementById("error");
-
-      if (pass === PASSWORD) {
-        localStorage.setItem("adminLogged", "true");
-        document.querySelector(".admin-section").style.display = "none";
-        document.getElementById("ideasSection").style.display = "block";
-        errorMsg.style.display = "none";
-        loadIdeasFromFile();
-      } else {
-        errorMsg.textContent = "Špatné heslo!";
-        errorMsg.style.display = "block";
-      }
-    }
-
-    async function loadIdeasFromFile() {
-      try {
-        const res = await fetch("napady.json?t=" + Date.now());
-        ideas = await res.json();
-
-        ideas = ideas.map((idea, index) => ({
-          id: idea.id || index + 1,
-          name: idea.name,
-          email: idea.email,
-          idea: idea.idea,
-          created: idea.created,
-          status: idea.status || "pending"
-        }));
-
-        loadPending();
-      } catch (e) {
-        console.error("Chyba:", e);
-        document.getElementById("pendingTab").innerHTML =
-          '<div class="empty-ideas">Soubor napady.json není dostupný</div>';
-      }
-    }
-
-    function loadPending() {
-      const list = document.getElementById("pendingTab");
-      const pending = ideas.filter(i => i.status === "pending");
-
-      if (pending.length === 0) {
-        list.innerHTML = '<div class="empty-ideas">Žádné nové nápady</div>';
-        return;
-      }
-
-      pending.sort((a,b) => new Date(b.created) - new Date(a.created));
-
-      list.innerHTML = pending.map(idea => `
-        <div class="idea-item">
-          <p class="idea-name">${idea.name}</p>
-          <p class="idea-email">${idea.email}</p>
-          <p class="idea-text">"${idea.idea}"</p>
-          <p class="idea-date">Přidáno: ${new Date(idea.created).toLocaleDateString("cs-CZ")}</p>
-          <div class="action-buttons">
-            <button class="action-btn approve-btn" onclick="approveIdea(${idea.id})">Schválit</button>
-            <button class="action-btn reject-btn" onclick="rejectIdea(${idea.id})">Zamítnout</button>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    function approveIdea(id) {
-      const idea = ideas.find(i => i.id === id);
-      idea.status = "approved";
-      console.log("Schváleno:", idea);
-      loadPending();
-    }
-
-    function rejectIdea(id) {
-      const idea = ideas.find(i => i.id === id);
-      idea.status = "rejected";
-      console.log("Zamítnuto:", idea);
-      loadPending();
-    }
-  </script>
 </body>
 </html>
