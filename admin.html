@@ -31,51 +31,28 @@
     .error { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; }
     
     .ideas-section { display:none; margin-top:50px; }
-    
-    .tab-menu { display:flex; justify-content:center; gap:0; margin-bottom:30px; background:white; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08); max-width:600px; margin:0 auto 30px auto; }
-    .tab-btn { flex:1; padding:16px 20px; background:white; border:none; font-size:1rem; font-weight:600; cursor:pointer; transition:all 0.3s; color:var(--dark); border-bottom:3px solid transparent; }
-    .tab-btn:hover { background:#f9f9f9; }
-    .tab-btn.active { background:var(--light); border-bottom-color:var(--primary); color:var(--primary); }
-    
-    .tab-content { display:none; }
-    .tab-content.active { display:block; }
-    
+
     .idea-item { background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:15px; border-left:4px solid var(--primary); position:relative; }
-    .idea-item.approved { border-left-color:var(--green); background:#f0fff4; }
-    .idea-item.rejected { border-left-color:var(--red); background:#fff5f5; }
     .idea-item p { margin:8px 0; line-height:1.6; }
     .idea-name { font-weight:600; color:var(--dark); font-size:1.1rem; }
     .idea-email { font-size:0.9rem; color:#666; }
     .idea-text { margin-top:10px; color:var(--dark); font-style:italic; }
     .idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
     .empty-ideas { text-align:center; padding:30px; color:#999; }
-    
-    .status-badge { display:inline-block; padding:6px 12px; border-radius:6px; font-size:0.85rem; font-weight:600; margin-top:10px; }
-    .status-approved { background:var(--green); color:white; }
-    .status-rejected { background:var(--red); color:white; }
-    
+
     .action-buttons { display:flex; gap:10px; margin-top:15px; }
     .action-btn { padding:10px 20px; border:none; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.3s; }
     .approve-btn { background:var(--green); color:white; }
     .approve-btn:hover { background:#229954; }
     .reject-btn { background:var(--red); color:white; }
     .reject-btn:hover { background:#c0392b; }
-    .restore-btn { background:var(--primary); color:white; }
-    .restore-btn:hover { background:var(--accent); }
-    .delete-btn { background:#95a5a6; color:white; }
-    .delete-btn:hover { background:#7f8c8d; }
-    
-    .back-link { text-align:center; margin-top:40px; }
-    .back-link a { color:var(--primary); text-decoration:none; font-weight:600; transition:color 0.3s; }
-    .back-link a:hover { color:var(--accent); }
-    
+
     footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; margin-top:auto; }
   </style>
 </head>
 <body>
 
-  <header>
-  </header>
+  <header></header>
 
   <main>
     <div class="admin-section">
@@ -90,20 +67,11 @@
 
     <div id="ideasSection" class="ideas-section">
       <h2>Nové Nápady</h2>
-      
-      <div class="tab-menu">
-        <button class="tab-btn active" onclick="switchTab('pending')">Nové</button>
-        <button class="tab-btn" onclick="switchTab('archive')">Archiv</button>
-        <button class="tab-btn" onclick="switchTab('approved')">Schváleno</button>
-      </div>
-
-      <div id="pendingTab" class="tab-content active"></div>
-      <div id="approvedTab" class="tab-content"></div>
-      <div id="archiveTab" class="tab-content"></div>
+      <div id="pendingTab"></div>
     </div>
 
-    <div class="back-link">
-      <a href="index.html">Zpět na hlavní stránku</a>
+    <div class="back-link" style="text-align:center; margin-top:40px;">
+      <a href="index.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Zpět na hlavní stránku</a>
     </div>
   </main>
 
@@ -113,16 +81,25 @@
 
   <script>
     const PASSWORD = "MojeHeslo123";
-    let currentTab = 'pending';
     let ideas = [];
 
-    function checkPassword() {
-      const errorMsg = document.getElementById("error");
-      const ideasSection = document.getElementById("ideasSection");
-      
-      if (document.getElementById("password").value === PASSWORD) {
+    /* === AUTOLOGIN === */
+    window.onload = () => {
+      if (localStorage.getItem("adminLogged") === "true") {
         document.querySelector(".admin-section").style.display = "none";
-        ideasSection.style.display = "block";
+        document.getElementById("ideasSection").style.display = "block";
+        loadIdeasFromFile();
+      }
+    };
+
+    function checkPassword() {
+      const pass = document.getElementById("password").value;
+      const errorMsg = document.getElementById("error");
+
+      if (pass === PASSWORD) {
+        localStorage.setItem("adminLogged", "true");
+        document.querySelector(".admin-section").style.display = "none";
+        document.getElementById("ideasSection").style.display = "block";
         errorMsg.style.display = "none";
         loadIdeasFromFile();
       } else {
@@ -135,47 +112,22 @@
       try {
         const res = await fetch("napady.json?t=" + Date.now());
         ideas = await res.json();
-        
-        // Přidáme ID a status, pokud chybí
+
         ideas = ideas.map((idea, index) => ({
           id: idea.id || index + 1,
           name: idea.name,
           email: idea.email,
           idea: idea.idea,
           created: idea.created,
-          status: idea.status || 'pending'
+          status: idea.status || "pending"
         }));
-        
-        loadAllTabs();
+
+        loadPending();
       } catch (e) {
-        console.error('Chyba při načítání nápadů:', e);
-        document.getElementById("pendingTab").innerHTML = '<div class="empty-ideas">Soubor napady.json není dostupný</div>';
+        console.error("Chyba:", e);
+        document.getElementById("pendingTab").innerHTML =
+          '<div class="empty-ideas">Soubor napady.json není dostupný</div>';
       }
-    }
-
-    async function saveIdeasToFile() {
-      // Tato funkce by v reálném prostředí ukládala do souboru
-      // Pro lokální testování pouze loguje do konzole
-      console.log('Ukládám nápady:', ideas);
-      // V produkčním prostředí by zde byl fetch POST požadavek na server
-    }
-
-    function switchTab(tab) {
-      currentTab = tab;
-      
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
-      event.target.classList.add('active');
-      document.getElementById(tab + 'Tab').classList.add('active');
-      
-      loadAllTabs();
-    }
-
-    function loadAllTabs() {
-      loadPending();
-      loadApproved();
-      loadArchive();
     }
 
     function loadPending() {
@@ -203,91 +155,18 @@
       `).join("");
     }
 
-    function loadApproved() {
-      const list = document.getElementById("approvedTab");
-      const approved = ideas.filter(i => i.status === "approved");
-
-      if (approved.length === 0) {
-        list.innerHTML = '<div class="empty-ideas">Žádné schválené nápady</div>';
-        return;
-      }
-
-      approved.sort((a,b) => new Date(b.created) - new Date(a.created));
-
-      list.innerHTML = approved.map(idea => `
-        <div class="idea-item approved">
-          <p class="idea-name">${idea.name}</p>
-          <p class="idea-email">${idea.email}</p>
-          <p class="idea-text">"${idea.idea}"</p>
-          <p class="idea-date">Přidáno: ${new Date(idea.created).toLocaleDateString("cs-CZ")}</p>
-          <span class="status-badge status-approved">SCHVÁLENO</span>
-        </div>
-      `).join("");
-    }
-
-    function loadArchive() {
-      const list = document.getElementById("archiveTab");
-      const rejected = ideas.filter(i => i.status === "rejected");
-
-      if (rejected.length === 0) {
-        list.innerHTML = '<div class="empty-ideas">Archiv je prázdný</div>';
-        return;
-      }
-
-      rejected.sort((a,b) => new Date(b.created) - new Date(a.created));
-
-      list.innerHTML = rejected.map(idea => `
-        <div class="idea-item rejected">
-          <p class="idea-name">${idea.name}</p>
-          <p class="idea-email">${idea.email}</p>
-          <p class="idea-text">"${idea.idea}"</p>
-          <p class="idea-date">Přidáno: ${new Date(idea.created).toLocaleDateString("cs-CZ")}</p>
-          <span class="status-badge status-rejected">ZAMÍTNUTO</span>
-          <div class="action-buttons">
-            <button class="action-btn restore-btn" onclick="restoreIdea(${idea.id})">Obnovit</button>
-            <button class="action-btn delete-btn" onclick="deleteIdea(${idea.id})">Smazat</button>
-          </div>
-        </div>
-      `).join("");
-    }
-
     function approveIdea(id) {
       const idea = ideas.find(i => i.id === id);
-      if (idea) {
-        idea.status = 'approved';
-        saveIdeasToFile();
-        loadAllTabs();
-        console.log('Nápad schválen:', idea);
-      }
+      idea.status = "approved";
+      console.log("Schváleno:", idea);
+      loadPending();
     }
 
     function rejectIdea(id) {
       const idea = ideas.find(i => i.id === id);
-      if (idea) {
-        idea.status = 'rejected';
-        saveIdeasToFile();
-        loadAllTabs();
-        console.log('Nápad zamítnut:', idea);
-      }
-    }
-
-    function restoreIdea(id) {
-      const idea = ideas.find(i => i.id === id);
-      if (idea) {
-        idea.status = 'pending';
-        saveIdeasToFile();
-        loadAllTabs();
-        console.log('Nápad obnoven:', idea);
-      }
-    }
-
-    function deleteIdea(id) {
-      if (confirm('Opravdu chcete tento nápad trvale smazat?')) {
-        ideas = ideas.filter(i => i.id !== id);
-        saveIdeasToFile();
-        loadAllTabs();
-        console.log('Nápad smazán, ID:', id);
-      }
+      idea.status = "rejected";
+      console.log("Zamítnuto:", idea);
+      loadPending();
     }
   </script>
 </body>
