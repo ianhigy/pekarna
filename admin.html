@@ -70,14 +70,13 @@
 
 <script>
   const PASSWORD = "MojeHeslo123";
-  let ideas = [];
 
   /* ===== AUTOLOGIN ===== */
   window.onload = () => {
     if (localStorage.getItem("adminLogged") === "true") {
       document.querySelector(".admin-section").style.display = "none";
       document.getElementById("ideasSection").style.display = "block";
-      loadIdeasFromFile();
+      loadIdeasFromGoogleSheets();
     }
   };
 
@@ -90,54 +89,46 @@
       document.querySelector(".admin-section").style.display = "none";
       document.getElementById("ideasSection").style.display = "block";
       errorMsg.style.display = "none";
-      loadIdeasFromFile();
+      loadIdeasFromGoogleSheets();
     } else {
       errorMsg.textContent = "Špatné heslo!";
       errorMsg.style.display = "block";
     }
   }
 
-  async function loadIdeasFromFile() {
+  /* ====== GOOGLE SHEETS NAČÍTÁNÍ (CSV) ====== */
+  async function loadIdeasFromGoogleSheets() {
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
+
     try {
-      const res = await fetch("napady.json?t=" + Date.now());
-      ideas = await res.json();
+      const response = await fetch(url);
+      const csv = await response.text();
 
-      ideas = ideas.map((idea, index) => ({
-        id: idea.id || index + 1,
-        name: idea.name,
-        email: idea.email,
-        idea: idea.idea,
-        created: idea.created,
-        status: idea.status || "pending"
-      }));
+      const rows = csv.split("\n").map(r => r.split(","));
+      const list = document.getElementById("pendingTab");
 
-      loadPending();
-    } catch (e) {
-      console.error("Chyba:", e);
+      if (rows.length <= 1) {
+        list.innerHTML = '<div class="empty-ideas">Žádné nové nápady</div>';
+        return;
+      }
+
+      // Přeskočit hlavičku
+      const items = rows.slice(1).filter(r => r[0].trim() !== "");
+
+      list.innerHTML = items.map(r => `
+        <div class="idea-item">
+          <p class="idea-name">${r[1] || "Neznámý"}</p>
+          <p class="idea-email">${r[2] || ""}</p>
+          <p class="idea-text">"${r[0]}"</p>
+          <p class="idea-date">${r[3] ? "Datum: " + r[3] : ""}</p>
+        </div>
+      `).join("");
+
+    } catch (err) {
+      console.error(err);
       document.getElementById("pendingTab").innerHTML =
-        '<div class="empty-ideas">Soubor napady.json není dostupný</div>';
+        '<div class="empty-ideas">Chyba načítání Google Formuláře</div>';
     }
-  }
-
-  function loadPending() {
-    const list = document.getElementById("pendingTab");
-    const pending = ideas.filter(i => i.status === "pending");
-
-    if (pending.length === 0) {
-      list.innerHTML = '<div class="empty-ideas">Žádné nové nápady</div>';
-      return;
-    }
-
-    pending.sort((a,b) => new Date(b.created) - new Date(a.created));
-
-    list.innerHTML = pending.map(idea => `
-      <div class="idea-item">
-        <p class="idea-name">${idea.name}</p>
-        <p class="idea-email">${idea.email}</p>
-        <p class="idea-text">"${idea.idea}"</p>
-        <p class="idea-date">Přidáno: ${new Date(idea.created).toLocaleDateString("cs-CZ")}</p>
-      </div>
-    `).join("");
   }
 </script>
 
