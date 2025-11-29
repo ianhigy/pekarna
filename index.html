@@ -187,7 +187,7 @@
 
     loadProducts();
 
-    // Sníh efekt
+    // SNÍŽEK
     function createSnowflake() {
       const snowflake = document.createElement('div');
       snowflake.className = 'snowflake';
@@ -201,7 +201,6 @@
       setTimeout(() => snowflake.remove(), 8000);
     }
 
-    // Kontrola, zda uživatel nemá zapnuté prefers-reduced-motion
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setInterval(createSnowflake, 200);
       for(let i = 0; i < 20; i++) createSnowflake();
