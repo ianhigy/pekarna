@@ -40,9 +40,13 @@
     
     footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; }
     
+    .snowflake { position:fixed; top:-10px; color:white; font-size:1.5rem; user-select:none; pointer-events:none; z-index:9999; animation:fall linear infinite; opacity:0.8; text-shadow:0 0 5px rgba(255,255,255,0.8); }
+    @keyframes fall { to { transform:translateY(100vh) rotate(360deg); } }
+    
     @media (prefers-reduced-motion: reduce) {
       .card { transition:none; }
       .card:hover { transform:none; }
+      .snowflake { animation:none !important; display:none; }
     }
   </style>
 </head>
@@ -182,6 +186,26 @@
     }
 
     loadProducts();
+
+    // Sníh efekt
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.className = 'snowflake';
+      snowflake.innerHTML = '❄';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.fontSize = (Math.random() * 1.5 + 0.5) + 'rem';
+      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+      document.body.appendChild(snowflake);
+      
+      setTimeout(() => snowflake.remove(), 8000);
+    }
+
+    // Kontrola, zda uživatel nemá zapnuté prefers-reduced-motion
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setInterval(createSnowflake, 200);
+      for(let i = 0; i < 20; i++) createSnowflake();
+    }
   </script>
 </body>
 </html>
