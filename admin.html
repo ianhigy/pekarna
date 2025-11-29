@@ -175,11 +175,9 @@
 
       const items = rows.slice(1).filter(r => r[0].trim() !== "");
 
-      // Zobrazit prvních 5
       const recentItems = items.slice(0, 5);
       list.innerHTML = recentItems.map((row, idx) => createIdeaHTML(row, idx)).join("");
 
-      // Starší nápady (od 6. dál)
       const olderItems = items.slice(5);
       if (olderItems.length > 0) {
         olderList.innerHTML = olderItems.map((row, idx) => createIdeaHTML(row, idx + 5)).join("");
