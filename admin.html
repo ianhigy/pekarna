@@ -30,10 +30,17 @@
 
     .idea-item { background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:15px; border-left:4px solid var(--primary); position:relative; }
     .idea-item p { margin:8px 0; line-height:1.6; }
+    .idea-id { font-weight:700; color:var(--primary); font-size:0.9rem; margin-bottom:5px; }
     .idea-name { font-weight:600; color:var(--dark); font-size:1.1rem; }
     .idea-email { font-size:0.9rem; color:#666; }
     .idea-text { margin-top:10px; color:var(--dark); font-style:italic; }
     .idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
+    .idea-actions { margin-top:15px; display:flex; gap:10px; }
+    .action-btn { padding:8px 16px; border:none; border-radius:8px; font-weight:600; cursor:pointer; transition:all 0.3s; font-size:0.9rem; }
+    .approve-btn { background:#27ae60; color:white; }
+    .approve-btn:hover { background:#229954; }
+    .reject-btn { background:#e74c3c; color:white; }
+    .reject-btn:hover { background:#c0392b; }
     .empty-ideas { text-align:center; padding:30px; color:#999; }
 
     .show-more-btn { width:auto; min-width:200px; margin:20px auto; padding:14px 30px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
@@ -135,18 +142,24 @@
     }
   }
 
-  function createIdeaHTML(row) {
+  function createIdeaHTML(row, index) {
     const datum = row[0] || "";
     const nazev = row[1] || "Neznámý";
     const email = row[2] || "";
     const popis = row[3] || "";
+    const ideaId = `IDEA-${String(index + 1).padStart(3, '0')}`;
 
     return `
       <div class="idea-item">
+        <p class="idea-id">${ideaId}</p>
         <p class="idea-name">${nazev}</p>
         <p class="idea-email">${email}</p>
         <p class="idea-text">"${popis}"</p>
         <p class="idea-date">${datum ? "Datum: " + datum : ""}</p>
+        <div class="idea-actions">
+          <button class="action-btn approve-btn" onclick="approveIdea('${ideaId}')">✓ Schválené</button>
+          <button class="action-btn reject-btn" onclick="rejectIdea('${ideaId}')">✕ Zamítnuté</button>
+        </div>
       </div>
     `;
   }
@@ -173,12 +186,12 @@
 
       // Zobrazit prvních 5
       const recentItems = items.slice(0, 5);
-      list.innerHTML = recentItems.map(row => createIdeaHTML(row)).join("");
+      list.innerHTML = recentItems.map((row, idx) => createIdeaHTML(row, idx)).join("");
 
       // Starší nápady (od 6. dál)
       const olderItems = items.slice(5);
       if (olderItems.length > 0) {
-        olderList.innerHTML = olderItems.map(row => createIdeaHTML(row)).join("");
+        olderList.innerHTML = olderItems.map((row, idx) => createIdeaHTML(row, idx + 5)).join("");
         showMoreBtn.style.display = "inline-block";
       } else {
         showMoreBtn.style.display = "none";
@@ -188,6 +201,20 @@
       console.error(err);
       document.getElementById("pendingTab").innerHTML =
         '<div class="empty-ideas">Chyba načítání Google Formuláře</div>';
+    }
+  }
+
+  function approveIdea(ideaId) {
+    if (confirm(`Schválit nápad ${ideaId}?`)) {
+      alert(`Nápad ${ideaId} byl schválen!`);
+      // Zde můžete přidat logiku pro uložení do databáze
+    }
+  }
+
+  function rejectIdea(ideaId) {
+    if (confirm(`Zamítnout nápad ${ideaId}?`)) {
+      alert(`Nápad ${ideaId} byl zamítnut!`);
+      // Zde můžete přidat logiku pro uložení do databáze
     }
   }
 </script>
