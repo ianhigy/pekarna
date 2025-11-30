@@ -60,7 +60,6 @@
       opacity: 0.3;
     }
     
-    /* Hero Section */
     .hero {
       position: relative;
       height: 100vh;
@@ -669,7 +668,6 @@
       }
     }
     
-    /* Responsive */
     @media (max-width: 768px) {
       .products-grid {
         grid-template-columns: 1fr;
@@ -852,7 +850,6 @@
       }
     }
 
-    // Load saved theme
     const savedTheme = localStorage.getItem('theme') || 'dark';
     if (savedTheme === 'light') {
       setTheme('light');
@@ -903,7 +900,6 @@
 
     loadProducts();
 
-    // Snowflakes
     function createSnowflake() {
       const snowflake = document.createElement('div');
       snowflake.className = 'snowflake';
