@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Super Pekárna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #d4a373;
+      --dark: #1a1a1a;
+      --light: #fafafa;
+      --accent: #e07a5f;
+      --gradient-warm: linear-gradient(135deg, #d4a373 0%, #e07a5f 100%);
+      --gradient-dark: linear-gradient(135deg, #2c1a0d 0%, #1a1a1a 100%);
+      --glass: rgba(255, 255, 255, 0.1);
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+      --shadow-lg: 0 16px 48px rgba(0,0,0,0.16);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-dark);
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('super-pekarna.png') center/cover;
+      opacity: 0.3;
+      z-index: 0;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+      padding: 0 20px;
+    }
+    
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 0%, #d4a373 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeInUp 1s ease-out;
+    }
+    
+    .hero-subtitle {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+    
+    .hero-cta {
+      display: inline-block;
+      padding: 18px 48px;
+      background: var(--gradient-warm);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 24px rgba(212, 163, 115, 0.4);
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+    
+    .hero-cta:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 16px 48px rgba(212, 163, 115, 0.6);
+    }
+    
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      z-index: 2;
+    }
+    
+    .scroll-indicator::before {
+      content: '↓';
+      font-size: 2rem;
+      color: white;
+      opacity: 0.7;
+    }
+    
+    /* Announcement Banner */
+    .announcement {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 50px;
+      padding: 12px 60px 12px 24px;
+      z-index: 1000;
+      box-shadow: var(--shadow-md);
+      border: 1px solid rgba(212, 163, 115, 0.2);
+      animation: slideDown 0.6s ease-out;
+      max-width: 90%;
+    }
+    
+    .announcement.hidden {
+      display: none;
+    }
+    
+    .close-btn {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--dark);
+      cursor: pointer;
+      opacity: 0.6;
+      transition: all 0.3s;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    
+    .close-btn:hover {
+      opacity: 1;
+      background: rgba(0,0,0,0.05);
+    }
+    
+    /* Section Styling */
+    section {
+      padding: 100px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      text-align: center;
+      margin-bottom: 1rem;
+      background: var(--gradient-warm);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.2rem;
+      opacity: 0.7;
+      margin-bottom: 60px;
+    }
+    
+    /* Contact Section */
+    .contact-card {
+      background: white;
+      border-radius: 32px;
+      padding: 60px 40px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(212, 163, 115, 0.1);
+      transition: transform 0.4s;
+    }
+    
+    .contact-card:hover {
+      transform: translateY(-8px);
+    }
+    
+    .contact-icon {
+      font-size: 4rem;
+      margin-bottom: 24px;
+    }
+    
+    .contact-text {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 32px;
+      line-height: 1.8;
+    }
+    
+    /* Products Grid */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 32px;
+      margin-top: 60px;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+    }
+    
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-warm);
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: 0;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .product-card:hover::before {
+      opacity: 0.03;
+    }
+    
+    .product-image {
+      position: relative;
+      height: 280px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    }
+    
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .product-card:hover .product-image img {
+      transform: scale(1.1);
+    }
+    
+    .product-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dark);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .product-content {
+      padding: 28px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+    
+    .product-description {
+      color: #666;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      min-height: 20px;
+    }
+    
+    .product-rating {
+      font-size: 1.4rem;
+      margin: 16px 0;
+      letter-spacing: 2px;
+    }
+    
+    .product-ingredients {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    
+    .product-ingredients strong {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    .product-date {
+      color: #999;
+      font-size: 0.85rem;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .product-date::before {
+      content: '📅';
+    }
+    
+    /* Footer */
+    footer {
+      background: var(--gradient-dark);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+      margin-top: 100px;
+    }
+    
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 0%, #d4a373 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .footer-text {
+      opacity: 0.8;
+      font-size: 0.95rem;
+    }
+    
+    /* Snowflakes */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1.5rem;
+      user-select: none;
+      pointer-events: none;
+      z-index: 9999;
+      animation: fall linear infinite;
+      opacity: 0.7;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.6));
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+    
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      
+      section {
+        padding: 60px 20px;
+      }
+      
+      .contact-card {
+        padding: 40px 24px;
+      }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+      .snowflake {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Announcement -->
+  <div id="announcement" class="announcement">
+    <button class="close-btn" onclick="this.parentElement.classList.add('hidden')" aria-label="Zavřít">✕</button>
+    <strong>✨ Novinka:</strong> Nový moderní web je tu!
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Super Pekárna</h1>
+      <p class="hero-subtitle">Vytvořeno s láskou a moukou</p>
+      <a href="#ideas" class="hero-cta">Sdílej svůj nápad</a>
+    </div>
+    <div class="scroll-indicator"></div>
+  </section>
+
+  <!-- Ideas Section -->
+  <section id="ideas">
+    <h2 class="section-title">Máš nápad?</h2>
+    <p class="section-subtitle">Sdílej s námi své nápady a inspirace</p>
+    
+    <div class="contact-card">
+      <div class="contact-icon">💡</div>
+      <p class="contact-text">
+        Máš skvělý nápad na nové pečivo? Chceš s námi sdílet své tipy a triky?<br>
+        Budeme rádi za každý tvůj návrh!
+      </p>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScbPsW00LGvBiAQKL9O_VjiR15jby58UTqIkpDt3sW4rNRbtA/viewform?usp=sharing&ouid=101182095751355125326" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="hero-cta">
+        Přejít na formulář
+      </a>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products">
+    <h2 class="section-title">Náš Protokol</h2>
+    <p class="section-subtitle">Objevte naše pečené speciality</p>
+    
+    <div id="productList" class="products-grid"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">Super Pekárna</div>
+      <p class="footer-text">© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
+    </div>
+  </footer>
+
+  <script>
+    const defaultImage = 'neco_se_nepovedlo.png';
+
+    const products = [
+      {
+        name: "Rafaelo",
+        description: "",
+        image: "rafaelo.jpg",
+        rating: 5,
+        ingredients: "Mouka, Cukr, Kondenzované mléko, Strouhaný kokos, Mandle",
+        created: "2025-11-28"
+      },
+      {
+        name: "Perníčky",
+        description: "3. Pokus",
+        image: "",
+        rating: 5,
+        ingredients: "Mouka, Cukr, Vajíčka, Perníčkové koření, Kakao, Mléko, Kypřící prášek",
+        created: "2025-11-26"
+      },
+      {
+        name: "Muffiny",
+        description: "2. Pokus, ale obrázek je z 1. pokusu",
+        image: "muffiny.webp",
+        rating: 4,
+        ingredients: "Mouka, Cukr, Vajíčka, Čokoláda, Kakao",
+        created: "2025-11-10"
+      },
+      {
+        name: "Pusinky",
+        description: "",
+        image: "pusinky.webp",
+        rating: 3,
+        ingredients: "Bílek z vajíčka, Cukr",
+        created: "Neznámé"
+      },
+      {
+        name: "Jablečný koláč",
+        description: "",
+        image: "jablecny_kolac.webp",
+        rating: 2,
+        ingredients: "Mouka, Vajíčka, Cukr, Jablka a jiné ovoce",
+        created: "Neznámé"
+      },
+      {
+        name: "Tyramisu",
+        description: "2. Pokus",
+        image: "",
+        rating: 2,
+        ingredients: "Mléko, Tvaroh, Piškoty, Kakao",
+        created: "Neznámé"
+      },
+      {
+        name: "Švestkový koláč",
+        description: "",
+        image: "svestkovy_kolac.webp",
+        rating: 3,
+        ingredients: "Mouka, Vajíčka, Cukr, Švestky a jiné ovoce",
+        created: "Neznámé"
+      },
+      {
+        name: "M&M´s Chléb",
+        description: "",
+        image: "mams_chleb.webp",
+        rating: 0,
+        ingredients: "Mouka, Vajíčka, Cukr, Bonbóny M&M´s",
+        created: "Neznámé"
+      }
+    ];
+
+    function loadProducts() {
+      const list = document.getElementById("productList");
+      
+      if (!products || products.length === 0) {
+        list.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px;">Zatím zde není žádné pečivo</div>';
+        return;
+      }
+
+      const sortedProducts = [...products].sort((a,b) => new Date(b.created) - new Date(a.created));
+
+      sortedProducts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        
+        const imgSrc = p.image || defaultImage;
+        
+        const dateText = p.created === "Neznámé" || !p.created || isNaN(new Date(p.created).getTime())
+          ? "Neznámé"
+          : new Date(p.created).toLocaleDateString("cs-CZ", { day: 'numeric', month: 'long', year: 'numeric' });
+        
+        const stars = "⭐".repeat(p.rating) + "☆".repeat(5 - p.rating);
+        
+        card.innerHTML = `
+          <div class="product-image">
+            <img src="${imgSrc}" alt="${p.name}" loading="lazy">
+            ${p.rating === 5 ? '<div class="product-badge">🏆 Top</div>' : ''}
+          </div>
+          <div class="product-content">
+            <h3 class="product-name">${p.name}</h3>
+            <p class="product-description">${p.description}</p>
+            <div class="product-rating">${stars}</div>
+            <div class="product-ingredients">
+              <strong>Ingredience</strong>
+              ${p.ingredients}
+            </div>
+            <div class="product-date">Přidáno ${dateText}</div>
+          </div>
+        `;
+        
+        list.appendChild(card);
+      });
+    }
+
+    loadProducts();
+
+    // Snowflakes
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.className = 'snowflake';
+      snowflake.innerHTML = '❄';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.fontSize = (Math.random() * 1.5 + 0.5) + 'rem';
+      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
+      snowflake.style.opacity = Math.random() * 0.4 + 0.3;
+      document.body.appendChild(snowflake);
+      
+      setTimeout(() => snowflake.remove(), 8000);
+    }
+
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setInterval(createSnowflake, 200);
+      for(let i = 0; i < 15; i++) createSnowflake();
+    }
+  </script>
+</body>
+</html>
