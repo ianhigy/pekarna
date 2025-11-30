@@ -78,9 +78,11 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: url('super-pekarna.png') center/cover no-repeat;
+      background-image: url('super-pekarna.png');
+      background-position: center;
+      background-repeat: no-repeat;
       background-size: 100% 100%;
-      opacity: 0;
+      opacity: 1;
       z-index: 0;
     }
     
@@ -148,7 +150,7 @@
     
     /* Announcement Banner */
     .announcement {
-      position: absolute;
+      position: fixed;
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
@@ -156,7 +158,7 @@
       backdrop-filter: blur(20px);
       border-radius: 50px;
       padding: 12px 60px 12px 24px;
-      z-index: 2;
+      z-index: 1000;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.3);
       max-width: 90%;
@@ -477,7 +479,7 @@
     /* Theme Toggle */
     .theme-toggle {
       position: fixed;
-      top: 80px;
+      top: 30px;
       right: 30px;
       z-index: 1001;
       background: rgba(255, 255, 255, 0.1);
@@ -485,11 +487,10 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 50px;
       padding: 8px;
-      display: flex;
+      display: none;
       gap: 8px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       transition: all 0.3s ease;
-      display: none;
     }
     
     body.light-mode .theme-toggle {
@@ -833,15 +834,11 @@
         document.body.classList.add('light-mode');
         document.getElementById('lightBtn').classList.add('active');
         document.getElementById('darkBtn').classList.remove('active');
-        document.getElementById('navLightBtn').classList.add('active');
-        document.getElementById('navDarkBtn').classList.remove('active');
         localStorage.setItem('theme', 'light');
       } else {
         document.body.classList.remove('light-mode');
         document.getElementById('darkBtn').classList.add('active');
         document.getElementById('lightBtn').classList.remove('active');
-        document.getElementById('navDarkBtn').classList.add('active');
-        document.getElementById('navLightBtn').classList.remove('active');
         localStorage.setItem('theme', 'dark');
       }
     }
