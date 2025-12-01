@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Super Pekárna</title>
+  <link rel="icon" type="image/png" href="sp.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #d4a373;
+      --dark: #1a1a1a;
+      --light: #fafafa;
+      --accent: #e07a5f;
+      --gradient-warm: linear-gradient(135deg, #d4a373 0%, #e07a5f 100%);
+      --gradient-dark: linear-gradient(135deg, #2c1a0d 0%, #1a1a1a 100%);
+      --neon-glow: 0 0 20px rgba(212, 163, 115, 0.6), 0 0 40px rgba(212, 163, 115, 0.4);
+      --bg-dark: #0a0a0a;
+      --bg-light: #fafafa;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family:'Inter',sans-serif;
+      background:var(--bg-dark);
+      color:white;
+      min-height:100vh;
+      overflow-x:hidden;
+      position:relative;
+      transition:background .5s ease;
+    }
+    body.light-mode { background:var(--bg-light); }
+    .cyber-grid {
+      position:fixed; top:0; left:0; right:0; bottom:0; z-index:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(212,163,115,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(212,163,115,.03) 1px,transparent 1px);
+      background-size:50px 50px;
+    }
+    body.light-mode .cyber-grid { opacity:.4; }
+
+    /* Navigační lišta */
+    .nav-menu {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      background:rgba(10,10,10,.8); backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(212,163,115,.2);
+      padding:16px 24px; display:flex; align-items:center; justify-content:space-between;
+    }
+    body.light-mode .nav-menu { background:rgba(255,255,255,.9); border-bottom:1px solid rgba(0,0,0,.1); }
+    .nav-logo {
+      font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700;
+      background:linear-gradient(135deg,#fff,#d4a373);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      text-decoration:none;
+    }
+    .nav-right { display:flex; gap:16px; align-items:center; }
+
+    /* Hero / Header */
+    .hero {
+      height:50vh; position:relative; display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0;
+      background:url('super-pekarna.png') center/cover no-repeat;
+      z-index:0;
+    }
+    .hero-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to bottom,transparent 0%,var(--bg-dark) 100%);
+      z-index:1;
+    }
+    .hero h1 {
+      font-family:'Playfair Display',serif; font-size:clamp(3rem,8vw,5rem);
+      text-align:center; z-index:2; text-shadow:var(--neon-glow);
+      background:linear-gradient(135deg,#fff,var(--primary));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+
+    /* Hlavní obsah */
+    main { padding:100px 20px; max-width:1400px; margin:0 auto; position:relative; z-index:1; }
+    .section-title {
+      font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem);
+      text-align:center; margin-bottom:60px; color:white; text-shadow:var(--neon-glow);
+    }
+    .section-title::after {
+      content:''; display:block; width:80px; height:3px; background:var(--gradient-warm);
+      margin:20px auto 0; border-radius:2px; box-shadow:var(--neon-glow);
+    }
+    body.light-mode .section-title { color:var(--dark); text-shadow:none; }
+    body.light-mode .section-title::after { box-shadow:none; }
+
+    .admin-card, .ideas-grid {
+      background:rgba(10,10,10,.6); backdrop-filter:blur(20px);
+      border-radius:28px; padding:40px; border:1px solid rgba(212,163,115,.2);
+      box-shadow:0 8px 32px rgba(0,0,0,.3);
+    }
+    body.light-mode .admin-card, body.light-mode .ideas-grid {
+      background:rgba(255,255,255,.85); border:1px solid rgba(212,163,115,.3);
+    }
+
+    .form-group { margin-bottom:24px; }
+    .form-group label {
+      display:block; margin-bottom:8px; font-weight:600; color:var(--primary);
+    }
+    .form-group input {
+      width:100%; padding:16px; background:rgba(255,255,255,.1);
+      border:1px solid rgba(212,163,115,.3); border-radius:12px; color:white;
+      font-size:1rem; transition:all .3s;
+    }
+    body.light-mode .form-group input { background:rgba(0,0,0,.05); color:var(--dark); }
+    .form-group input:focus {
+      outline:none; border-color:var(--primary); box-shadow:0 0 20px rgba(212,163,115,.4);
+    }
+    .login-btn, .show-more-btn {
+      width:100%; padding:18px; background:var(--gradient-warm); color:white;
+      border:none; border-radius:50px; font-weight:600; font-size:1.1rem;
+      cursor:pointer; transition:all .4s; box-shadow:0 8px 24px rgba(212,163,115,.4);
+    }
+    .login-btn:hover, .show-more-btn:hover {
+      transform:translateY(-4px) scale(1.05);
+      box-shadow:0 16px 48px rgba(212,163,115,.6);
+    }
+
+    .error {
+      margin-top:16px; padding:12px; background:rgba(224,122,95,.2);
+      border:1px solid var(--accent); border-radius:12px; color:var(--accent);
+      text-align:center; display:none;
+    }
+
+    .ideas-grid { margin-top:60px; display:grid; gap:24px; }
+    .idea-item {
+      background:rgba(10,10,10,.7); backdrop-filter:blur(20px);
+      border-radius:20px; padding:24px; border-left:4px solid var(--primary);
+      transition:all .4s;
+    }
+    body.light-mode .idea-item { background:rgba(255,255,255,.8); }
+    .idea-item:hover { transform:translateY(-8px); box-shadow:0 16px 40px rgba(212,163,115,.3); }
+    .idea-id { color:var(--primary); font-weight:700; font-size:.9rem; }
+    .idea-name { font-size:1.3rem; margin:8px 0; font-weight:600; }
+    .idea-email { color:rgba(255,255,255,.7); font-size:.95rem; }
+    body.light-mode .idea-email { color:rgba(0,0,0,.7); }
+    .idea-text { margin-top:12px; font-style:italic; line-height:1.7; }
+    .idea-date { margin-top:12px; font-size:.85rem; color:rgba(255,255,255,.5); }
+    body.light-mode .idea-date { color:rgba(0,0,0,.5); }
+
+    .empty { text-align:center; padding:60px; color:rgba(255,255,255,.5); font-size:1.1rem; }
+
+    /* Modální okno */
+    .modal {
+      display:none; position:fixed; inset:0; z-index:2000;
+      background:rgba(0,0,0,.8); backdrop-filter:blur(10px);
+      align-items:center; justify-content:center;
+    }
+    .modal.show { display:flex; }
+    .modal-content {
+      background:rgba(10,10,10,.9); backdrop-filter:blur(20px);
+      border-radius:28px; padding:40px; max-width:900px; width:90%;
+      max-height:90vh; overflow-y:auto; border:1px solid rgba(212,163,115,.3);
+    }
+    body.light-mode .modal-content { background:rgba(255,255,255,.95); }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
+    .modal-header h3 {
+      font-family:'Playfair Display',serif; font-size:2.2rem;
+      background:linear-gradient(135deg,#fff,var(--primary));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .close-btn {
+      background:none; border:none; color:white; font-size:2.5rem; cursor:pointer;
+    }
+    body.light-mode .close-btn { color:var(--dark); }
+
+    footer {
+      background:var(--gradient-dark); color:white; text-align:center;
+      padding:60px 20px; border-top:1px solid rgba(212,163,115,.2);
+      margin-top:100px;
+    }
+    .footer-logo {
+      font-family:'Playfair Display',serif; font-size:2.5rem; margin-bottom:12px;
+      background:linear-gradient(135deg,#fff,var(--primary));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    }
+
+    /* Sněžení a částice */
+    .snowflake, .particle { position:fixed; pointer-events:none; z-index:9999; }
+    .snowflake { color:white; animation:fall linear infinite; opacity:.6; }
+    @keyframes fall { to { transform:translateY(100vh) rotate(360deg); } }
+
+    @media (max-width:768px) {
+      main { padding:60px 16px; }
+      .hero { height:40vh; }
+      .admin-card, .ideas-grid { padding:32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cyber-grid"></div>
+
+  <nav class="nav-menu">
+    <a href="index.html" class="nav-logo">Admin | Super Pekárna</a>
+    <div class="nav-right">
+      <button class="nav-theme-btn" id="themeToggle" onclick="toggleTheme()">
+        <i data-lucide="sun" id="sunIcon"></i>
+        <i data-lucide="moon" id="moonIcon"></i>
+      </button>
+      <a href="index.html" style="color:white; opacity:.8; text-decoration:none;">
+        <i data-lucide="arrow-left"></i> Zpět na web
+      </a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <h1>Admin Panel</h1>
+  </section>
+
+  <main>
+    <div class="admin-card" id="loginSection">
+      <h2 class="section-title">Přihlášení</h2>
+      <div class="form-group">
+        <label>Heslo</label>
+        <input type="password" id="password" placeholder="Zadej tajné heslo">
+      </div>
+      <button class="login-btn" onclick="checkPassword()">Přihlásit se</button>
+      <div id="error" class="error"></div>
+    </div>
+
+    <div id="ideasSection" style="display:none;">
+      <h2 class="section-title">Nové Nápady od komunity</h2>
+      <div class="ideas-grid" id="pendingTab"></div>
+      <div style="text-align:center; margin-top:40px;">
+        <button id="showMoreBtn" class="show-more-btn" onclick="openModal()" style="display:none;">
+          Zobrazit všechny nápady
+        </button>
+      </div>
+    </div>
+
+    <div id="olderIdeasModal" class="modal" onclick="closeModalOnOutside(event)">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Všechny nápady</h3>
+          <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div id="olderIdeas"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-logo">Super Pekárna</div>
+    <p>© 2025 – Vytvořeno s láskou a moukou Haluzákem</p>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+    const PASSWORD = "MojeHeslo123";
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+      localStorage.setItem('adminTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('adminTheme') === 'light') document.body.classList.add('light-mode');
+
+    window.onload = () => {
+      if (localStorage.getItem("adminLogged") === "true") {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("ideasSection").style.display = "block";
+        loadIdeasFromGoogleSheets();
+      }
+    };
+
+    function checkPassword() {
+      const pass = document.getElementById("password").value;
+      const error = document.getElementById("error");
+      if (pass === PASSWORD) {
+        localStorage.setItem("adminLogged", "true");
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("ideasSection").style.display = "block";
+        error.style.display = "none";
+        loadIdeasFromGoogleSheets();
+      } else {
+        error.textContent = "Špatné heslo, zkus to znovu!";
+        error.style.display = "block";
+      }
+    }
+
+    function openModal() {
+      document.getElementById("olderIdeasModal").classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal() {
+      document.getElementById("olderIdeasModal").classList.remove("show");
+      document.body.style.overflow = "auto";
+    }
+    function closeModalOnOutside(e) {
+      if (e.target.id === "olderIdeasModal") closeModal();
+    }
+
+    function createIdeaHTML(row, index) {
+      const datum = row[0] || "";
+      const nazev = row[1] || "Neznámý";
+      const email = row[2] || "";
+      const popis = row[3] || "";
+      const ideaId = `IDEA-${String(index + 1).padStart(3, '0')}`;
+      return `
+        <div class="idea-item">
+          <div class="idea-id">${ideaId}</div>
+          <div class="idea-name">${nazev}</div>
+          <div class="idea-email">${email}</div>
+          <div class="idea-text">"${popis}"</div>
+          ${datum ? `<div class="idea-date">Odesláno: ${datum}</div>` : ''}
+        </div>`;
+    }
+
+    async function loadIdeasFromGoogleSheets() {
+      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
+      try {
+        const resp = await fetch(url);
+        const csv = await resp.text();
+        const rows = csv.split("\n").map(r => r.split(","));
+
+        if (rows.length <= 1) {
+          document.getElementById("pendingTab").innerHTML = '<div class="empty">Zatím žádné nápady</div>';
+          return;
+        }
+
+        const items = rows.slice(1).filter(r => r.length > 1);
+        const recent = items.slice(0, 5);
+        const older = items.slice(5);
+
+        document.getElementById("pendingTab").innerHTML = recent.length
+          ? recent.map((r, i) => createIdeaHTML(r, i)).join("")
+          : '<div class="empty">Žádné nové nápady</div>';
+
+        if (older.length) {
+          document.getElementById("olderIdeas").innerHTML = older.map((r, i) => createIdeaHTML(r, i + 5)).join("");
+          document.getElementById("showMoreBtn").style.display = "block";
+        } else {
+          document.getElementById("showMoreBtn").style.display = "none";
+        }
+      } catch (err) {
+        document.getElementById("pendingTab").innerHTML = '<div class="empty">Chyba připojení k formuláři</div>';
+      }
+    }
+
+    // Sněžení (volitelné)
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setInterval(() => {
+        const s = document.createElement('div');
+        s.className = 'snowflake';
+        s.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M12 2v20M4.93 4.93l14.14 14.14M19.07 4.93L4.93 19.07"/></svg>';
+        s.style.left = Math.random()*100 + '%';
+        s.style.animationDuration = (Math.random()*4 + 6) + 's';
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 10000);
+      }, 400);
+    }
+  </script>
+</body>
+</html>
