@@ -149,7 +149,6 @@
       opacity: 0.7;
     }
     
-    /* Announcement Banner */
     .announcement {
       position: absolute;
       bottom: 40px;
@@ -280,7 +279,6 @@
       color: rgba(0, 0, 0, 0.7);
     }
     
-    /* Products Grid */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -445,7 +443,6 @@
       content: '📅';
     }
     
-    /* Footer */
     footer {
       background: var(--gradient-dark);
       color: white;
@@ -690,13 +687,11 @@
   </style>
 </head>
 <body>
-  <!-- Announcement -->
   <div id="announcement" class="announcement">
     <button class="close-btn" onclick="this.parentElement.classList.add('hidden')" aria-label="Zavřít">✕</button>
     <strong>✨ Novinka:</strong> Nový moderní web je tu!
   </div>
 
-  <!-- Theme Toggle -->
   <div class="theme-toggle">
     <button class="theme-btn active" id="darkBtn" onclick="setTheme('dark')" aria-label="Tmavý režim">
       🌙
@@ -706,7 +701,6 @@
     </button>
   </div>
 
-  <!-- Hero Section -->
   <section class="hero">
     <div id="announcement" class="announcement">
       <button class="close-btn" onclick="this.parentElement.classList.add('hidden')" aria-label="Zavřít">✕</button>
