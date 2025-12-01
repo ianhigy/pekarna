@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Pekárna</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href__="https://fonts.googleapis.com">
+  <link rel="preconnect" href__="https://fonts.gstatic.com" crossorigin>
+  <link href__="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --primary: #d4a373;
@@ -15,18 +16,19 @@
       --accent: #e07a5f;
       --gradient-warm: linear-gradient(135deg, #d4a373 0%, #e07a5f 100%);
       --gradient-dark: linear-gradient(135deg, #2c1a0d 0%, #1a1a1a 100%);
-      --glass: rgba(255, 255, 255, 0.1);
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-      --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
-      --shadow-lg: 0 16px 48px rgba(0,0,0,0.16);
+      --neon-glow: 0 0 20px rgba(212, 163, 115, 0.6), 0 0 40px rgba(212, 163, 115, 0.4), 0 0 60px rgba(212, 163, 115, 0.2);
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
@@ -36,11 +38,11 @@
       position: relative;
       transition: background 0.5s ease;
     }
-    
+
     body.light-mode {
       background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 50%, #eeeeee 100%);
     }
-    
+
     body::before {
       content: '';
       position: fixed;
@@ -49,27 +51,190 @@
       right: 0;
       bottom: 0;
       background: 
-        radial-gradient(circle at 20% 50%, rgba(212, 163, 115, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(224, 122, 95, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 50%, rgba(212, 163, 115, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(224, 122, 95, 0.15) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
       transition: opacity 0.5s ease;
     }
-    
+
     body.light-mode::before {
       opacity: 0.3;
     }
-    
+
+    .cyber-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(rgba(212, 163, 115, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212, 163, 115, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body.light-mode .cyber-grid {
+      opacity: 0.5;
+    }
+
+    .nav-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+
+    body.light-mode .nav-menu {
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      background: linear-gradient(135deg, #fff 0%, #d4a373 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    body.light-mode .nav-logo {
+      background: linear-gradient(135deg, #1a1a1a 0%, #d4a373 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 8px 0;
+    }
+
+    body.light-mode .nav-links a {
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-warm);
+      transition: width 0.3s ease;
+      box-shadow: var(--neon-glow);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-theme-toggle {
+      display: flex;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50px;
+      padding: 4px;
+    }
+
+    body.light-mode .nav-theme-toggle {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-theme-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    body.light-mode .nav-theme-btn {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    .nav-theme-btn.active {
+      background: var(--gradient-warm);
+      color: white;
+      box-shadow: 0 4px 15px rgba(212, 163, 115, 0.5);
+    }
+
+    .nav-theme-btn:not(.active):hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    body.light-mode .nav-theme-btn:not(.active):hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    body.light-mode .mobile-menu-btn {
+      color: var(--dark);
+    }
+
     .hero {
       position: relative;
       height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--gradient-dark);
       overflow: hidden;
     }
-    
+
     .hero::before {
       content: '';
       position: absolute;
@@ -83,101 +248,58 @@
       background-size: cover;
       width: 100%;
       height: 100%;
-      opacity: 1;
       z-index: 0;
     }
-    
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      color: white;
-      padding: 0 20px;
-      display: none;
-    }
-    
-    .hero-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(3rem, 8vw, 7rem);
-      font-weight: 900;
-      margin-bottom: 1rem;
-      color: white;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      animation: fadeInUp 1s ease-out;
-    }
-    
-    .hero-subtitle {
-      font-size: clamp(1.2rem, 3vw, 1.8rem);
-      opacity: 0.9;
-      margin-bottom: 2rem;
-      animation: fadeInUp 1s ease-out 0.2s both;
-    }
-    
-    .hero-cta {
-      display: inline-block;
-      padding: 18px 48px;
-      background: var(--gradient-warm);
-      color: white;
-      text-decoration: none;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 8px 24px rgba(212, 163, 115, 0.4);
-      animation: fadeInUp 1s ease-out 0.4s both;
-    }
-    
-    .hero-cta:hover {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 16px 48px rgba(212, 163, 115, 0.6);
-    }
-    
-    .scroll-indicator {
+
+    .hero::after {
+      content: '';
       position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      animation: bounce 2s infinite;
-      z-index: 2;
-      display: none;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to top, rgba(10, 10, 10, 1) 0%, transparent 100%);
+      z-index: 1;
     }
-    
-    .scroll-indicator::before {
-      content: '↓';
-      font-size: 2rem;
-      color: white;
-      opacity: 0.7;
+
+    body.light-mode .hero::after {
+      background: linear-gradient(to top, rgba(250, 250, 250, 1) 0%, transparent 100%);
     }
-    
+
     .announcement {
       position: absolute;
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(10, 10, 10, 0.6);
       backdrop-filter: blur(20px);
       border-radius: 50px;
-      padding: 12px 60px 12px 24px;
-      z-index: 2;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 14px 60px 14px 24px;
+      z-index: 10;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(212, 163, 115, 0.3);
+      border: 1px solid rgba(212, 163, 115, 0.2);
       max-width: 90%;
       color: white;
       font-weight: 500;
+      animation: float 3s ease-in-out infinite;
     }
-    
+
     .announcement.hidden {
       display: none;
     }
-    
+
+    .announcement-icon {
+      color: var(--primary);
+      margin-right: 8px;
+    }
+
     .close-btn {
       position: absolute;
-      right: 20px;
+      right: 16px;
       top: 50%;
       transform: translateY(-50%);
       background: none;
       border: none;
-      font-size: 1.5rem;
       color: white;
       cursor: pointer;
       opacity: 0.8;
@@ -189,13 +311,13 @@
       justify-content: center;
       border-radius: 50%;
     }
-    
+
     .close-btn:hover {
       opacity: 1;
       background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-50%) scale(1.1);
+      transform: translateY(-50%) rotate(90deg);
     }
-    
+
     section {
       padding: 100px 20px;
       max-width: 1400px;
@@ -203,91 +325,147 @@
       position: relative;
       z-index: 1;
     }
-    
+
     .section-title {
       font-family: 'Playfair Display', serif;
       font-size: clamp(2.5rem, 5vw, 4rem);
       text-align: center;
       margin-bottom: 1rem;
       color: white;
-      text-shadow: 0 0 30px rgba(212, 163, 115, 0.5);
+      text-shadow: var(--neon-glow);
       transition: color 0.5s ease, text-shadow 0.5s ease;
+      position: relative;
     }
-    
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 3px;
+      background: var(--gradient-warm);
+      margin: 20px auto 0;
+      border-radius: 2px;
+      box-shadow: var(--neon-glow);
+    }
+
     body.light-mode .section-title {
       color: var(--dark);
       text-shadow: none;
     }
-    
-    .section-subtitle {
-      text-align: center;
-      font-size: 1.2rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 60px;
-      transition: color 0.5s ease;
+
+    body.light-mode .section-title::after {
+      box-shadow: none;
     }
-    
-    body.light-mode .section-subtitle {
-      color: rgba(0, 0, 0, 0.6);
-    }
-    
+
     .contact-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(10, 10, 10, 0.6);
       backdrop-filter: blur(20px);
       border-radius: 32px;
       padding: 60px 40px;
       text-align: center;
       max-width: 600px;
-      margin: 0 auto;
+      margin: 60px auto 0;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.4s;
-    }
-    
-    body.light-mode .contact-card {
-      background: rgba(255, 255, 255, 0.7);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(212, 163, 115, 0.2);
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
     }
-    
+
+    .contact-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(212, 163, 115, 0.1), transparent 30%);
+      animation: rotate 10s linear infinite;
+      z-index: -1;
+    }
+
+    body.light-mode .contact-card {
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(212, 163, 115, 0.3);
+    }
+
     .contact-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 16px 48px rgba(212, 163, 115, 0.2);
-      border-color: rgba(212, 163, 115, 0.3);
+      box-shadow: 0 16px 48px rgba(212, 163, 115, 0.3);
+      border-color: rgba(212, 163, 115, 0.5);
     }
-    
+
     .contact-icon {
-      font-size: 4rem;
-      margin-bottom: 24px;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      color: var(--primary);
       filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5));
-      transition: filter 0.5s ease;
+      animation: pulse-glow 2s ease-in-out infinite;
     }
-    
+
     body.light-mode .contact-icon {
       filter: none;
+      animation: none;
     }
-    
+
     .contact-text {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: rgba(255, 255, 255, 0.8);
       margin-bottom: 32px;
       line-height: 1.8;
       transition: color 0.5s ease;
     }
-    
+
     body.light-mode .contact-text {
       color: rgba(0, 0, 0, 0.7);
     }
-    
+
+    .cta-button {
+      display: inline-block;
+      padding: 18px 48px;
+      background: var(--gradient-warm);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 24px rgba(212, 163, 115, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .cta-button:hover::before {
+      left: 100%;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 16px 48px rgba(212, 163, 115, 0.6);
+    }
+
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 32px;
       margin-top: 60px;
     }
-    
+
     .product-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(10, 10, 10, 0.6);
       backdrop-filter: blur(20px);
       border-radius: 24px;
       overflow: hidden;
@@ -296,13 +474,13 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       position: relative;
     }
-    
+
     body.light-mode .product-card {
       background: rgba(255, 255, 255, 0.8);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(212, 163, 115, 0.2);
     }
-    
+
     .product-card::before {
       content: '';
       position: absolute;
@@ -315,85 +493,114 @@
       transition: opacity 0.4s;
       z-index: 0;
     }
-    
+
     .product-card:hover {
-      transform: translateY(-12px);
-      box-shadow: 0 16px 48px rgba(212, 163, 115, 0.3);
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(212, 163, 115, 0.3);
       border-color: rgba(212, 163, 115, 0.5);
     }
-    
+
     .product-card:hover::before {
       opacity: 0.05;
     }
-    
+
     .product-image {
       position: relative;
-      height: 280px;
+      height: 240px;
       overflow: hidden;
-      background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     }
-    
+
     .product-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .product-card:hover .product-image img {
       transform: scale(1.1);
     }
-    
+
     .product-badge {
       position: absolute;
       top: 16px;
       right: 16px;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(10, 10, 10, 0.8);
       backdrop-filter: blur(10px);
       padding: 8px 16px;
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: 600;
-      color: var(--dark);
-      box-shadow: var(--shadow-sm);
+      color: var(--primary);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(212, 163, 115, 0.3);
     }
-    
+
+    .product-badge svg {
+      width: 16px;
+      height: 16px;
+    }
+
     .product-content {
-      padding: 28px;
+      padding: 24px;
       position: relative;
       z-index: 1;
     }
-    
+
     .product-name {
       font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       margin-bottom: 8px;
       color: white;
       transition: color 0.5s ease;
     }
-    
+
     body.light-mode .product-name {
       color: var(--dark);
     }
-    
+
     .product-description {
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 16px;
-      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 12px;
+      font-size: 0.9rem;
       min-height: 20px;
       transition: color 0.5s ease;
     }
-    
+
     body.light-mode .product-description {
       color: rgba(0, 0, 0, 0.6);
     }
-    
+
     .product-rating {
-      font-size: 1.4rem;
+      display: flex;
+      gap: 4px;
       margin: 16px 0;
-      letter-spacing: 2px;
     }
-    
+
+    .star {
+      width: 20px;
+      height: 20px;
+      color: #444;
+      transition: all 0.3s;
+    }
+
+    .star.filled {
+      color: #fbbf24;
+      filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
+    }
+
+    body.light-mode .star {
+      color: #ddd;
+    }
+
+    body.light-mode .star.filled {
+      filter: none;
+    }
+
     .product-ingredients {
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(10px);
@@ -406,27 +613,27 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.5s ease;
     }
-    
+
     body.light-mode .product-ingredients {
       background: rgba(0, 0, 0, 0.03);
       color: rgba(0, 0, 0, 0.7);
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
-    
+
     .product-ingredients strong {
       color: var(--primary);
       display: block;
       margin-bottom: 8px;
-      text-shadow: 0 0 10px rgba(212, 163, 115, 0.5);
+      text-shadow: 0 0 10px rgba(212, 163, 115, 0.3);
       transition: text-shadow 0.5s ease;
     }
-    
+
     body.light-mode .product-ingredients strong {
       text-shadow: none;
     }
-    
+
     .product-date {
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(255, 255, 255, 0.5);
       font-size: 0.85rem;
       margin-top: 16px;
       display: flex;
@@ -434,28 +641,40 @@
       gap: 8px;
       transition: color 0.5s ease;
     }
-    
+
+    .product-date svg {
+      width: 16px;
+      height: 16px;
+      color: var(--primary);
+    }
+
     body.light-mode .product-date {
       color: rgba(0, 0, 0, 0.5);
     }
-    
-    .product-date::before {
-      content: '📅';
-    }
-    
+
     footer {
-      background: var(--gradient-dark);
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: white;
       text-align: center;
       padding: 60px 20px;
       margin-top: 100px;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(212, 163, 115, 0.2);
     }
-    
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 1px;
+      background: var(--gradient-warm);
+      box-shadow: var(--neon-glow);
     }
-    
+
     .footer-logo {
       font-family: 'Playfair Display', serif;
       font-size: 2.5rem;
@@ -465,269 +684,188 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    
+
     .footer-text {
-      opacity: 0.8;
+      opacity: 0.6;
       font-size: 0.95rem;
     }
-    
-    .theme-toggle {
-      position: fixed;
-      top: 30px;
-      right: 30px;
-      z-index: 1001;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50px;
-      padding: 8px;
-      display: none;
-      gap: 8px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-    }
-    
-    body.light-mode .theme-toggle {
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .theme-toggle:hover {
-      transform: scale(1.05);
-    }
-    
-    .theme-btn {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 1.4rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    
-    .theme-btn.active {
-      background: var(--gradient-warm);
-      box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
-    }
-    
-    .theme-btn:not(.active):hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    body.light-mode .theme-btn:not(.active):hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
-    
-    .nav-menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.3s ease;
-    }
-    
-    body.light-mode .nav-menu {
-      background: rgba(255, 255, 255, 0.8);
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      align-items: center;
-    }
-    
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    
-    body.light-mode .nav-links a {
-      color: var(--dark);
-    }
-    
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-    
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--primary);
-      transition: width 0.3s ease;
-    }
-    
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-    
-    .nav-theme-toggle {
-      display: flex;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50px;
-      padding: 6px;
-    }
-    
-    body.light-mode .nav-theme-toggle {
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .nav-theme-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-theme-btn.active {
-      background: var(--gradient-warm);
-      box-shadow: 0 4px 12px rgba(212, 163, 115, 0.4);
-    }
-    
-    .nav-theme-btn:not(.active):hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    body.light-mode .nav-theme-btn:not(.active):hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
-    
+
     .snowflake {
       position: fixed;
-      top: -10px;
+      top: -20px;
       color: white;
-      font-size: 1.5rem;
       user-select: none;
       pointer-events: none;
       z-index: 9999;
       animation: fall linear infinite;
-      opacity: 0.7;
-      filter: drop-shadow(0 0 8px rgba(255,255,255,0.6));
+      opacity: 0.6;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
     }
-    
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+
+    .particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.3;
+      animation: float-particle 15s ease-in-out infinite;
     }
-    
-    @keyframes bounce {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(-10px); }
-    }
-    
+
     @keyframes fall {
       to {
         transform: translateY(100vh) rotate(360deg);
       }
     }
-    
+
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5)); }
+      50% { filter: drop-shadow(0 0 30px rgba(212, 163, 115, 0.8)); }
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes float-particle {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+      25% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
+      50% { transform: translateY(-50px) translateX(-30px); opacity: 0.3; }
+      75% { transform: translateY(-150px) translateX(20px); opacity: 0.5; }
+    }
+
     @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 20px;
+        gap: 16px;
+        border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+      }
+
+      body.light-mode .nav-links {
+        background: rgba(255, 255, 255, 0.95);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       .products-grid {
         grid-template-columns: 1fr;
         gap: 24px;
       }
-      
+
       section {
-        padding: 60px 20px;
+        padding: 60px 16px;
       }
-      
+
       .contact-card {
         padding: 40px 24px;
+        margin: 40px 16px 0;
+      }
+
+      .cta-button {
+        padding: 16px 36px;
+        font-size: 1rem;
+      }
+
+      .announcement {
+        padding: 12px 50px 12px 20px;
+        font-size: 0.9rem;
+      }
+
+      .product-image {
+        height: 200px;
+      }
+
+      .nav-menu {
+        padding: 12px 16px;
+      }
+
+      .hero {
+        height: 100svh;
       }
     }
-    
+
     @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        transition: none !important;
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
-      .snowflake {
+      .snowflake, .particle {
         display: none;
       }
     }
   </style>
 </head>
 <body>
-  <div id="announcement" class="announcement">
-    <button class="close-btn" onclick="this.parentElement.classList.add('hidden')" aria-label="Zavřít">✕</button>
-    <strong>✨ Novinka:</strong> Nový disajn webu je tu!
-  </div>
+  <div class="cyber-grid"></div>
 
-  <div class="theme-toggle">
-    <button class="theme-btn active" id="darkBtn" onclick="setTheme('dark')" aria-label="Tmavý režim">
-      🌙
-    </button>
-    <button class="theme-btn" id="lightBtn" onclick="setTheme('light')" aria-label="Světlý režim">
-      ☀️
-    </button>
-  </div>
+  <nav class="nav-menu">
+    <a href__="#" class="nav-logo">Super Pekárna</a>
+    <div class="nav-links" id="navLinks">
+      <a href__="#ideas">Nápady</a>
+      <a href__="#products">Protokol</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-theme-toggle">
+        <button class="nav-theme-btn active" id="navDarkBtn" onclick="setTheme('dark')" aria-label="Tmavý režim">
+          <i data-lucide="moon" style="width: 18px; height: 18px;"></i>
+        </button>
+        <button class="nav-theme-btn" id="navLightBtn" onclick="setTheme('light')" aria-label="Světlý režim">
+          <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+      </button>
+    </div>
+  </nav>
 
   <section class="hero">
     <div id="announcement" class="announcement">
-      <button class="close-btn" onclick="this.parentElement.classList.add('hidden')" aria-label="Zavřít">✕</button>
-      <strong>✨ Novinka:</strong> Nový dizajn webu je tu!
+      <button class="close-btn" onclick="this.parentElement.classList.add('hidden')" aria-label="Zavřít">
+        <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+      </button>
+      <i data-lucide="sparkles" class="announcement-icon" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i>
+      <strong>Novinka:</strong> Nový dizajn webu je tu!
     </div>
-    <div class="hero-content">
-      <h1 class="hero-title">Super Pekárna</h1>
-      <p class="hero-subtitle">Vytvořeno s láskou a moukou</p>
-      <a href="#ideas" class="hero-cta">Sdílej svůj nápad</a>
-    </div>
-    <div class="scroll-indicator"></div>
   </section>
 
   <section id="ideas">
     <h2 class="section-title">Máš nápad?</h2>
-    <p class="section-subtitle" style="display: none;">Sdílej s námi své nápady!</p>
-    
     <div class="contact-card">
-      <div class="contact-icon">💡</div>
+      <i data-lucide="lightbulb" class="contact-icon"></i>
       <p class="contact-text">
         Máš nápad na novou šmakoládu? Máš nápad na úpravu webu?<br>
         Napiš nám kliknutím na tlačítko níže!
       </p>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLScbPsW00LGvBiAQKL9O_VjiR15jby58UTqIkpDt3sW4rNRbtA/viewform?usp=sharing&ouid=101182095751355125326" 
+      <a href__="https://docs.google.com/forms/d/e/1FAIpQLScbPsW00LGvBiAQKL9O_VjiR15jby58UTqIkpDt3sW4rNRbtA/viewform?usp=sharing&ouid=101182095751355125326" 
          target="_blank" 
          rel="noopener noreferrer" 
-         class="hero-cta">
+         class="cta-button">
         Přejít na formulář
       </a>
     </div>
@@ -735,8 +873,6 @@
 
   <section id="products">
     <h2 class="section-title">Náš Protokol</h2>
-    <p class="section-subtitle" style="display: none;">To, co jsme v minulosti vařili</p>
-    
     <div id="productList" class="products-grid"></div>
   </section>
 
@@ -792,7 +928,7 @@
         created: "Neznámé"
       },
       {
-        name: "Tyramisu",
+        name: "Tiramisu",
         description: "2. Pokus",
         image: "",
         rating: 2,
@@ -820,19 +956,19 @@
     function setTheme(theme) {
       if (theme === 'light') {
         document.body.classList.add('light-mode');
-        document.getElementById('lightBtn')?.classList.add('active');
-        document.getElementById('darkBtn')?.classList.remove('active');
         document.getElementById('navLightBtn').classList.add('active');
         document.getElementById('navDarkBtn').classList.remove('active');
         localStorage.setItem('theme', 'light');
       } else {
         document.body.classList.remove('light-mode');
-        document.getElementById('darkBtn')?.classList.add('active');
-        document.getElementById('lightBtn')?.classList.remove('active');
         document.getElementById('navDarkBtn').classList.add('active');
         document.getElementById('navLightBtn').classList.remove('active');
         localStorage.setItem('theme', 'dark');
       }
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('navLinks').classList.toggle('active');
     }
 
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -844,11 +980,15 @@
       const list = document.getElementById("productList");
       
       if (!products || products.length === 0) {
-        list.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px;">Zatím zde není žádné pečivo</div>';
+        list.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px; color: rgba(255,255,255,0.6);">Zatím zde není žádné pečivo</div>';
         return;
       }
 
-      const sortedProducts = [...products].sort((a,b) => new Date(b.created) - new Date(a.created));
+      const sortedProducts = [...products].sort((a, b) => {
+        if (a.created === "Neznámé") return 1;
+        if (b.created === "Neznámé") return -1;
+        return new Date(b.created) - new Date(a.created);
+      });
 
       sortedProducts.forEach(p => {
         const card = document.createElement('div');
@@ -860,27 +1000,35 @@
           ? "Neznámé"
           : new Date(p.created).toLocaleDateString("cs-CZ", { day: 'numeric', month: 'long', year: 'numeric' });
         
-        const stars = "⭐".repeat(p.rating) + "☆".repeat(5 - p.rating);
+        let starsHtml = '';
+        for (let i = 0; i < 5; i++) {
+          starsHtml += `<i data-lucide="star" class="star ${i < p.rating ? 'filled' : ''}"></i>`;
+        }
         
         card.innerHTML = `
           <div class="product-image">
             <img src="${imgSrc}" alt="${p.name}" loading="lazy">
-            ${p.rating === 5 ? '<div class="product-badge">🏆 Top</div>' : ''}
+            ${p.rating === 5 ? '<div class="product-badge"><i data-lucide="trophy"></i> Top</div>' : ''}
           </div>
           <div class="product-content">
             <h3 class="product-name">${p.name}</h3>
             <p class="product-description">${p.description}</p>
-            <div class="product-rating">${stars}</div>
+            <div class="product-rating">${starsHtml}</div>
             <div class="product-ingredients">
               <strong>Ingredience</strong>
               ${p.ingredients}
             </div>
-            <div class="product-date">Přidáno ${dateText}</div>
+            <div class="product-date">
+              <i data-lucide="calendar"></i>
+              Přidáno ${dateText}
+            </div>
           </div>
         `;
         
         list.appendChild(card);
       });
+
+      lucide.createIcons();
     }
 
     loadProducts();
@@ -888,20 +1036,32 @@
     function createSnowflake() {
       const snowflake = document.createElement('div');
       snowflake.className = 'snowflake';
-      snowflake.innerHTML = '❄';
+      snowflake.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>';
       snowflake.style.left = Math.random() * 100 + '%';
-      snowflake.style.fontSize = (Math.random() * 1.5 + 0.5) + 'rem';
-      snowflake.style.animationDuration = (Math.random() * 3 + 5) + 's';
-      snowflake.style.opacity = Math.random() * 0.4 + 0.3;
+      snowflake.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+      snowflake.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      snowflake.style.opacity = Math.random() * 0.4 + 0.2;
       document.body.appendChild(snowflake);
       
-      setTimeout(() => snowflake.remove(), 8000);
+      setTimeout(() => snowflake.remove(), 10000);
+    }
+
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 5 + 's';
+      document.body.appendChild(particle);
     }
 
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setInterval(createSnowflake, 200);
-      for(let i = 0; i < 15; i++) createSnowflake();
+      setInterval(createSnowflake, 400);
+      for (let i = 0; i < 10; i++) createSnowflake();
+      for (let i = 0; i < 20; i++) createParticle();
     }
+
+    lucide.createIcons();
   </script>
 </body>
 </html>
