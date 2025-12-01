@@ -120,9 +120,15 @@
       background-clip: text;
     }
 
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
     .nav-links {
       display: flex;
-      gap: 24px;
+      gap: 32px;
       align-items: center;
     }
 
@@ -251,24 +257,32 @@
       z-index: 0;
     }
 
-    .hero::after {
-      content: '';
+    .hero-transition {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 200px;
-      background: linear-gradient(to top, rgba(10, 10, 10, 1) 0%, transparent 100%);
+      height: 300px;
+      background: linear-gradient(to top, 
+        rgba(10, 10, 10, 1) 0%, 
+        rgba(10, 10, 10, 0.8) 30%,
+        rgba(10, 10, 10, 0.4) 60%,
+        transparent 100%);
       z-index: 1;
+      pointer-events: none;
     }
 
-    body.light-mode .hero::after {
-      background: linear-gradient(to top, rgba(250, 250, 250, 1) 0%, transparent 100%);
+    body.light-mode .hero-transition {
+      background: linear-gradient(to top, 
+        rgba(250, 250, 250, 1) 0%, 
+        rgba(250, 250, 250, 0.8) 30%,
+        rgba(250, 250, 250, 0.4) 60%,
+        transparent 100%);
     }
 
     .announcement {
       position: absolute;
-      bottom: 40px;
+      bottom: 60px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(10, 10, 10, 0.6);
@@ -291,6 +305,8 @@
     .announcement-icon {
       color: var(--primary);
       margin-right: 8px;
+      display: inline-flex;
+      vertical-align: middle;
     }
 
     .close-btn {
@@ -590,6 +606,7 @@
 
     .star.filled {
       color: #fbbf24;
+      fill: #fbbf24;
       filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
     }
 
@@ -743,26 +760,31 @@
     }
 
     @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
+      .nav-center {
+        position: fixed;
+        top: 68px;
         left: 0;
         right: 0;
+        transform: none;
         background: rgba(10, 10, 10, 0.95);
         backdrop-filter: blur(20px);
-        flex-direction: column;
         padding: 20px;
-        gap: 16px;
         border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+        display: none;
       }
 
-      body.light-mode .nav-links {
+      body.light-mode .nav-center {
         background: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       }
 
-      .nav-links.active {
-        display: flex;
+      .nav-center.active {
+        display: block;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 16px;
       }
 
       .mobile-menu-btn {
@@ -793,6 +815,7 @@
       .announcement {
         padding: 12px 50px 12px 20px;
         font-size: 0.9rem;
+        bottom: 40px;
       }
 
       .product-image {
@@ -805,6 +828,10 @@
 
       .hero {
         height: 100svh;
+      }
+
+      .hero-transition {
+        height: 200px;
       }
     }
 
@@ -825,9 +852,11 @@
 
   <nav class="nav-menu">
     <a href__="#" class="nav-logo">Super Pekárna</a>
-    <div class="nav-links" id="navLinks">
-      <a href__="#ideas">Nápady</a>
-      <a href__="#products">Protokol</a>
+    <div class="nav-center" id="navCenter">
+      <div class="nav-links">
+        <a href__="#ideas" onclick="closeMobileMenu()">Nápady</a>
+        <a href__="#products" onclick="closeMobileMenu()">Protokol</a>
+      </div>
     </div>
     <div class="nav-right">
       <div class="nav-theme-toggle">
@@ -838,18 +867,21 @@
           <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
         </button>
       </div>
-      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
-        <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <i data-lucide="menu" id="menuIcon" style="width: 24px; height: 24px;"></i>
       </button>
     </div>
   </nav>
 
   <section class="hero">
+    <div class="hero-transition"></div>
     <div id="announcement" class="announcement">
-      <button class="close-btn" onclick="this.parentElement.classList.add('hidden')" aria-label="Zavřít">
+      <button class="close-btn" onclick="closeAnnouncement()" aria-label="Zavřít">
         <i data-lucide="x" style="width: 18px; height: 18px;"></i>
       </button>
-      <i data-lucide="sparkles" class="announcement-icon" style="width: 16px; height: 16px; display: inline; vertical-align: middle;"></i>
+      <span class="announcement-icon">
+        <i data-lucide="sparkles" style="width: 16px; height: 16px;"></i>
+      </span>
       <strong>Novinka:</strong> Nový dizajn webu je tu!
     </div>
   </section>
@@ -884,6 +916,8 @@
   </footer>
 
   <script>
+    lucide.createIcons();
+
     const defaultImage = 'neco_se_nepovedlo.png';
 
     const products = [
@@ -968,7 +1002,28 @@
     }
 
     function toggleMobileMenu() {
-      document.getElementById('navLinks').classList.toggle('active');
+      const navCenter = document.getElementById('navCenter');
+      const menuIcon = document.getElementById('menuIcon');
+      const isActive = navCenter.classList.toggle('active');
+      
+      if (isActive) {
+        menuIcon.setAttribute('data-lucide', 'x');
+      } else {
+        menuIcon.setAttribute('data-lucide', 'menu');
+      }
+      lucide.createIcons();
+    }
+
+    function closeMobileMenu() {
+      const navCenter = document.getElementById('navCenter');
+      const menuIcon = document.getElementById('menuIcon');
+      navCenter.classList.remove('active');
+      menuIcon.setAttribute('data-lucide', 'menu');
+      lucide.createIcons();
+    }
+
+    function closeAnnouncement() {
+      document.getElementById('announcement').classList.add('hidden');
     }
 
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -1060,8 +1115,6 @@
       for (let i = 0; i < 10; i++) createSnowflake();
       for (let i = 0; i < 20; i++) createParticle();
     }
-
-    lucide.createIcons();
   </script>
 </body>
 </html>
