@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin | Super Pekárna</title>
-  <link rel="icon" type="image/png" href__="sp.webp">
+  <link rel="icon" type="image/webp" href__="sp.webp">
   <link rel="preconnect" href__="https://fonts.googleapis.com">
   <link rel="preconnect" href__="https://fonts.gstatic.com" crossorigin>
   <link href__="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -90,56 +90,43 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      display: none;
-      align-items: center;
-      gap: 20px;
     }
-    .nav-center.show { display: flex; }
-    .nav-link {
+    .nav-links {
       display: flex;
+      gap: 32px;
       align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50px;
+    }
+    .nav-links a {
       color: rgba(255, 255, 255, 0.8);
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
       text-decoration: none;
-    }
-    body.light-mode .nav-link {
-      background: rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      color: rgba(0, 0, 0, 0.7);
-    }
-    .nav-link:hover {
-      background: rgba(212, 163, 115, 0.2);
-      border-color: rgba(212, 163, 115, 0.4);
-      color: var(--primary);
-      transform: translateY(-2px);
-    }
-    .logout-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: rgba(224, 122, 95, 0.2);
-      border: 1px solid rgba(224, 122, 95, 0.4);
-      border-radius: 50px;
-      color: #e07a5f;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
       transition: all 0.3s ease;
+      position: relative;
+      padding: 8px 0;
+      cursor: pointer;
     }
-    .logout-btn:hover {
-      background: rgba(224, 122, 95, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+    body.light-mode .nav-links a { color: rgba(0, 0, 0, 0.7); }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient-warm);
+      transition: width 0.3s ease;
+      box-shadow: var(--neon-glow);
     }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links .logout-link {
+      color: #e07a5f;
+      display: none;
+    }
+    .nav-links .logout-link.show { display: block; }
+    .nav-links .logout-link:hover { color: #c0563f; }
+    .nav-links .logout-link::after { background: linear-gradient(135deg, #e07a5f 0%, #c0563f 100%); }
     .nav-right { display: flex; align-items: center; gap: 16px; }
     .nav-theme-toggle {
       display: flex;
@@ -175,6 +162,15 @@
     }
     .nav-theme-btn:not(.active):hover { background: rgba(255, 255, 255, 0.1); }
     body.light-mode .nav-theme-btn:not(.active):hover { background: rgba(0, 0, 0, 0.05); }
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+    }
+    body.light-mode .mobile-menu-btn { color: var(--dark); }
     .hero {
       position: relative;
       height: 100vh;
@@ -635,13 +631,15 @@
         backdrop-filter: blur(20px);
         padding: 20px;
         border-bottom: 1px solid rgba(212, 163, 115, 0.2);
-        flex-direction: column;
-        gap: 12px;
+        display: none;
       }
       body.light-mode .nav-center {
         background: rgba(255, 255, 255, 0.95);
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       }
+      .nav-center.active { display: block; }
+      .nav-links { flex-direction: column; gap: 16px; }
+      .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
       .hero { height: 100svh; }
       .hero-transition { height: 40vh; }
       main { padding: 40px 16px; }
@@ -664,16 +662,12 @@
 <body>
   <div class="cyber-grid"></div>
   <nav class="nav-menu">
-    <a href__="index.html" class="nav-logo">Super Pekárna</a>
+    <span class="nav-logo">Super Pekárna</span>
     <div class="nav-center" id="navCenter">
-      <a href__="index.html" class="nav-link" onclick="window.location.href__='index.html'; return false;">
-        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
-        Zpět na hlavní stránku
-      </a>
-      <button class="logout-btn" onclick="logout()">
-        <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
-        Odhlásit se
-      </button>
+      <div class="nav-links">
+        <a href__="index.html">Hlavní stránka</a>
+        <a class="logout-link" id="logoutLink" onclick="logout()">Odhlásit se</a>
+      </div>
     </div>
     <div class="nav-right">
       <div class="nav-theme-toggle">
@@ -684,6 +678,9 @@
           <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
         </button>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <i data-lucide="menu" id="menuIcon" style="width: 24px; height: 24px;"></i>
+      </button>
     </div>
   </nav>
   <section class="hero">
@@ -743,6 +740,24 @@
         localStorage.setItem('theme', 'dark');
       }
     }
+    function toggleMobileMenu() {
+      var navCenter = document.getElementById('navCenter');
+      var menuIcon = document.getElementById('menuIcon');
+      var isActive = navCenter.classList.toggle('active');
+      if (isActive) {
+        menuIcon.setAttribute('data-lucide', 'x');
+      } else {
+        menuIcon.setAttribute('data-lucide', 'menu');
+      }
+      lucide.createIcons();
+    }
+    function closeMobileMenu() {
+      var navCenter = document.getElementById('navCenter');
+      var menuIcon = document.getElementById('menuIcon');
+      navCenter.classList.remove('active');
+      menuIcon.setAttribute('data-lucide', 'menu');
+      lucide.createIcons();
+    }
     var savedTheme = localStorage.getItem('theme') || 'dark';
     if (savedTheme === 'light') {
       setTheme('light');
@@ -773,15 +788,16 @@
     function showIdeasSection() {
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("ideasSection").classList.add("show");
-      document.getElementById("navCenter").classList.add("show");
+      document.getElementById("logoutLink").classList.add("show");
     }
     function logout() {
       localStorage.removeItem("adminLogged");
       document.getElementById("loginSection").style.display = "block";
       document.getElementById("ideasSection").classList.remove("show");
-      document.getElementById("navCenter").classList.remove("show");
+      document.getElementById("logoutLink").classList.remove("show");
       document.getElementById("password").value = "";
       document.getElementById("errorMsg").classList.remove("show");
+      closeMobileMenu();
     }
     function openModal() {
       document.getElementById("olderIdeasModal").classList.add("show");
