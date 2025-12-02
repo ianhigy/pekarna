@@ -50,8 +50,6 @@
       z-index: 0;
     }
     body.light-mode .cyber-grid { opacity: 0.5; }
-    
-    /* Navigation */
     .nav-menu {
       position: fixed;
       top: 0;
@@ -88,6 +86,60 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    body.light-mode .nav-link {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      color: rgba(0, 0, 0, 0.7);
+    }
+    .nav-link:hover {
+      background: rgba(212, 163, 115, 0.2);
+      border-color: rgba(212, 163, 115, 0.4);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .logout-btn {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(224, 122, 95, 0.2);
+      border: 1px solid rgba(224, 122, 95, 0.4);
+      border-radius: 50px;
+      color: #e07a5f;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .logout-btn:hover {
+      background: rgba(224, 122, 95, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+    }
+    .logout-btn.show { display: flex; }
     .nav-right { display: flex; align-items: center; gap: 16px; }
     .nav-theme-toggle {
       display: flex;
@@ -123,32 +175,9 @@
     }
     .nav-theme-btn:not(.active):hover { background: rgba(255, 255, 255, 0.1); }
     body.light-mode .nav-theme-btn:not(.active):hover { background: rgba(0, 0, 0, 0.05); }
-    
-    .logout-btn {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      background: rgba(224, 122, 95, 0.2);
-      border: 1px solid rgba(224, 122, 95, 0.4);
-      border-radius: 50px;
-      color: #e07a5f;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .logout-btn:hover {
-      background: rgba(224, 122, 95, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
-    }
-    .logout-btn.show { display: flex; }
-    
-    /* Hero */
     .hero {
       position: relative;
-      height: 50vh;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -188,8 +217,6 @@
         rgba(250, 250, 250, 0.8) 30%, rgba(250, 250, 250, 0.5) 50%,
         rgba(250, 250, 250, 0.2) 70%, transparent 100%);
     }
-    
-    /* Main Content */
     main {
       flex: 1;
       padding: 60px 20px;
@@ -199,7 +226,6 @@
       position: relative;
       z-index: 1;
     }
-    
     .section-title {
       font-family: 'Playfair Display', serif;
       font-size: clamp(2rem, 4vw, 3rem);
@@ -222,8 +248,6 @@
     }
     body.light-mode .section-title { color: var(--dark); text-shadow: none; }
     body.light-mode .section-title::after { box-shadow: none; }
-    
-    /* Admin Card */
     .admin-card {
       background: rgba(10, 10, 10, 0.6);
       backdrop-filter: blur(20px);
@@ -258,7 +282,6 @@
       box-shadow: 0 16px 48px rgba(212, 163, 115, 0.3);
       border-color: rgba(212, 163, 115, 0.5);
     }
-    
     .admin-icon {
       width: 70px;
       height: 70px;
@@ -269,7 +292,6 @@
       display: block;
     }
     body.light-mode .admin-icon { filter: none; animation: none; }
-    
     .form-group { margin-bottom: 24px; }
     .form-group label {
       display: block;
@@ -301,7 +323,6 @@
       border-color: var(--primary);
       box-shadow: 0 0 20px rgba(212, 163, 115, 0.3);
     }
-    
     .login-btn {
       width: 100%;
       padding: 18px;
@@ -332,7 +353,6 @@
       transform: translateY(-4px) scale(1.02);
       box-shadow: 0 16px 48px rgba(212, 163, 115, 0.6);
     }
-    
     .error-msg {
       color: #e07a5f;
       font-weight: 600;
@@ -345,14 +365,11 @@
       text-align: center;
     }
     .error-msg.show { display: block; }
-    
-    /* Ideas Section */
     .ideas-section {
       display: none;
       margin-top: 20px;
     }
     .ideas-section.show { display: block; }
-    
     .idea-card {
       background: rgba(10, 10, 10, 0.6);
       backdrop-filter: blur(20px);
@@ -383,7 +400,6 @@
       background: var(--gradient-warm);
       border-radius: 4px 0 0 4px;
     }
-    
     .idea-header {
       display: flex;
       justify-content: space-between;
@@ -408,7 +424,6 @@
     }
     body.light-mode .idea-date { color: rgba(0, 0, 0, 0.5); }
     .idea-date svg { width: 14px; height: 14px; color: var(--primary); }
-    
     .idea-name {
       font-family: 'Playfair Display', serif;
       font-size: 1.4rem;
@@ -416,7 +431,6 @@
       margin-bottom: 6px;
     }
     body.light-mode .idea-name { color: var(--dark); }
-    
     .idea-email {
       color: rgba(255, 255, 255, 0.6);
       font-size: 0.9rem;
@@ -427,7 +441,6 @@
     }
     body.light-mode .idea-email { color: rgba(0, 0, 0, 0.6); }
     .idea-email svg { width: 16px; height: 16px; color: var(--primary); }
-    
     .idea-text {
       background: rgba(255, 255, 255, 0.05);
       padding: 18px;
@@ -436,13 +449,14 @@
       font-style: italic;
       line-height: 1.7;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      word-wrap: break-word;
+      white-space: pre-wrap;
     }
     body.light-mode .idea-text {
       background: rgba(0, 0, 0, 0.03);
       color: var(--dark);
       border: 1px solid rgba(0, 0, 0, 0.1);
     }
-    
     .empty-state {
       text-align: center;
       padding: 60px 20px;
@@ -455,7 +469,6 @@
       margin-bottom: 16px;
       color: rgba(212, 163, 115, 0.5);
     }
-    
     .show-more-btn {
       display: none;
       margin: 30px auto;
@@ -475,8 +488,6 @@
       box-shadow: 0 16px 48px rgba(212, 163, 115, 0.6);
     }
     .show-more-btn.show { display: block; }
-    
-    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -548,28 +559,6 @@
       color: #e07a5f;
       transform: rotate(90deg);
     }
-    
-    /* Back Link */
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 600;
-      margin-top: 40px;
-      padding: 12px 24px;
-      border-radius: 50px;
-      border: 1px solid rgba(212, 163, 115, 0.3);
-      transition: all 0.3s ease;
-    }
-    .back-link:hover {
-      background: rgba(212, 163, 115, 0.1);
-      transform: translateX(-4px);
-    }
-    .back-link svg { width: 18px; height: 18px; }
-    
-    /* Footer */
     footer {
       background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: white;
@@ -602,8 +591,6 @@
       background-clip: text;
     }
     .footer-text { opacity: 0.6; font-size: 0.9rem; }
-    
-    /* Particles & Snowflakes */
     .snowflake {
       position: fixed;
       top: -20px;
@@ -626,8 +613,6 @@
       opacity: 0.3;
       animation: float-particle 15s ease-in-out infinite;
     }
-    
-    /* Animations */
     @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
     @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5)); } 50% { filter: drop-shadow(0 0 30px rgba(212, 163, 115, 0.8)); } }
     @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -637,21 +622,36 @@
       50% { transform: translateY(-50px) translateX(-30px); opacity: 0.3; }
       75% { transform: translateY(-150px) translateX(20px); opacity: 0.5; }
     }
-    
-    /* Responsive */
     @media (max-width: 768px) {
       .nav-menu { padding: 12px 16px; }
-      .hero { height: 40vh; }
+      .nav-center {
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        transform: none;
+        background: rgba(10, 10, 10, 0.95);
+        backdrop-filter: blur(20px);
+        padding: 20px;
+        border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+        flex-direction: column;
+        gap: 12px;
+        display: none;
+      }
+      body.light-mode .nav-center {
+        background: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      .nav-center.show { display: flex; }
+      .hero { height: 100svh; }
+      .hero-transition { height: 40vh; }
       main { padding: 40px 16px; }
       .admin-card { padding: 36px 24px; margin: 30px 16px; }
       .idea-card { padding: 20px; }
       .idea-name { font-size: 1.2rem; }
       .modal-content { padding: 24px; }
       .modal-header h3 { font-size: 1.5rem; }
-      .logout-btn { padding: 8px 14px; font-size: 0.85rem; }
-      .logout-btn span { display: none; }
     }
-    
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -664,15 +664,19 @@
 </head>
 <body>
   <div class="cyber-grid"></div>
-  
-  <!-- Navigation -->
   <nav class="nav-menu">
     <a href__="index.html" class="nav-logo">Super Pekárna</a>
-    <div class="nav-right">
+    <div class="nav-center" id="navCenter">
+      <a href__="index.html" class="nav-link">
+        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+        Zpět na hlavní stránku
+      </a>
       <button id="logoutBtn" class="logout-btn" onclick="logout()">
         <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
-        <span>Odhlásit se</span>
+        Odhlásit se
       </button>
+    </div>
+    <div class="nav-right">
       <div class="nav-theme-toggle">
         <button class="nav-theme-btn active" id="navDarkBtn" onclick="setTheme('dark')" aria-label="Tmavý režim">
           <i data-lucide="moon" style="width: 18px; height: 18px;"></i>
@@ -683,15 +687,10 @@
       </div>
     </div>
   </nav>
-  
-  <!-- Hero -->
   <section class="hero">
     <div class="hero-transition"></div>
   </section>
-  
-  <!-- Main Content -->
   <main>
-    <!-- Login Card -->
     <div id="loginSection" class="admin-card">
       <i data-lucide="lock" class="admin-icon"></i>
       <h2 class="section-title" style="font-size: 2rem; margin-bottom: 30px;">Přihlášení</h2>
@@ -704,8 +703,6 @@
       </button>
       <div id="errorMsg" class="error-msg">Špatné heslo!</div>
     </div>
-    
-    <!-- Ideas Section -->
     <div id="ideasSection" class="ideas-section">
       <h2 class="section-title">Nové Nápady</h2>
       <div id="pendingTab" style="margin-top: 40px;"></div>
@@ -715,17 +712,7 @@
         </button>
       </div>
     </div>
-    
-    <!-- Back Link -->
-    <div style="text-align: center;">
-      <a href__="index.html" class="back-link">
-        <i data-lucide="arrow-left"></i>
-        Zpět na hlavní stránku
-      </a>
-    </div>
   </main>
-  
-  <!-- Modal -->
   <div id="olderIdeasModal" class="modal" onclick="closeModalOnOutside(event)">
     <div class="modal-content">
       <div class="modal-header">
@@ -737,19 +724,13 @@
       <div id="olderIdeas"></div>
     </div>
   </div>
-  
-  <!-- Footer -->
   <footer>
     <div class="footer-logo">Super Pekárna</div>
     <p class="footer-text">© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
   </footer>
-  
   <script>
     lucide.createIcons();
-    
     const PASSWORD = "MojeHeslo123";
-    
-    // Theme handling
     function setTheme(theme) {
       if (theme === 'light') {
         document.body.classList.add('light-mode');
@@ -763,31 +744,24 @@
         localStorage.setItem('theme', 'dark');
       }
     }
-    
-    // Load saved theme
     const savedTheme = localStorage.getItem('theme') || 'dark';
     if (savedTheme === 'light') {
       setTheme('light');
     }
-    
-    // Check if already logged in
-    window.onload = () => {
+    window.onload = function() {
       if (localStorage.getItem("adminLogged") === "true") {
         showIdeasSection();
         loadIdeasFromGoogleSheets();
       }
     };
-    
     function handleKeyPress(event) {
       if (event.key === 'Enter') {
         checkPassword();
       }
     }
-    
     function checkPassword() {
-      const pass = document.getElementById("password").value;
-      const errorMsg = document.getElementById("errorMsg");
-      
+      var pass = document.getElementById("password").value;
+      var errorMsg = document.getElementById("errorMsg");
       if (pass === PASSWORD) {
         localStorage.setItem("adminLogged", "true");
         errorMsg.classList.remove('show');
@@ -797,118 +771,108 @@
         errorMsg.classList.add('show');
       }
     }
-    
     function showIdeasSection() {
       document.getElementById("loginSection").style.display = "none";
       document.getElementById("ideasSection").classList.add("show");
       document.getElementById("logoutBtn").classList.add("show");
+      document.getElementById("navCenter").classList.add("show");
     }
-    
     function logout() {
       localStorage.removeItem("adminLogged");
       document.getElementById("loginSection").style.display = "block";
       document.getElementById("ideasSection").classList.remove("show");
       document.getElementById("logoutBtn").classList.remove("show");
+      document.getElementById("navCenter").classList.remove("show");
       document.getElementById("password").value = "";
       document.getElementById("errorMsg").classList.remove("show");
     }
-    
     function openModal() {
       document.getElementById("olderIdeasModal").classList.add("show");
       document.body.style.overflow = "hidden";
     }
-    
     function closeModal() {
       document.getElementById("olderIdeasModal").classList.remove("show");
       document.body.style.overflow = "auto";
     }
-    
     function closeModalOnOutside(event) {
       if (event.target.id === "olderIdeasModal") {
         closeModal();
       }
     }
-    
-    function createIdeaHTML(row, index) {
-      const datum = row[0] || "";
-      const nazev = row[1] || "Neznámý";
-      const email = row[2] || "";
-      const popis = row[3] || "";
-      const ideaId = `IDEA-${String(index + 1).padStart(3, '0')}`;
-      
-      return `
-        <div class="idea-card">
-          <div class="idea-header">
-            <span class="idea-id">${ideaId}</span>
-            <span class="idea-date">
-              <i data-lucide="calendar"></i>
-              ${datum || "Neznámé datum"}
-            </span>
-          </div>
-          <h3 class="idea-name">${nazev}</h3>
-          <p class="idea-email">
-            <i data-lucide="mail"></i>
-            ${email || "Bez e-mailu"}
-          </p>
-          <div class="idea-text">"${popis}"</div>
-        </div>
-      `;
+    function parseCSVRow(row) {
+      var result = [];
+      var current = '';
+      var inQuotes = false;
+      for (var i = 0; i < row.length; i++) {
+        var char = row[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current.trim());
+      return result;
     }
-    
+    function createIdeaHTML(row, index) {
+      var datum = row[0] || "";
+      var nazev = row[1] || "Neznámý";
+      var email = row[2] || "";
+      var popis = row[3] || "";
+      var ideaId = "IDEA-" + String(index + 1).padStart(3, '0');
+      return '<div class="idea-card">' +
+        '<div class="idea-header">' +
+          '<span class="idea-id">' + ideaId + '</span>' +
+          '<span class="idea-date">' +
+            '<i data-lucide="calendar"></i>' +
+            (datum || "Neznámé datum") +
+          '</span>' +
+        '</div>' +
+        '<h3 class="idea-name">' + nazev + '</h3>' +
+        '<p class="idea-email">' +
+          '<i data-lucide="mail"></i>' +
+          (email || "Bez e-mailu") +
+        '</p>' +
+        '<div class="idea-text">"' + popis + '"</div>' +
+      '</div>';
+    }
     async function loadIdeasFromGoogleSheets() {
-      const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
-      
+      var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
       try {
-        const response = await fetch(url);
-        const csv = await response.text();
-        
-        const rows = csv.split("\n").map(r => r.split(","));
-        const list = document.getElementById("pendingTab");
-        const olderList = document.getElementById("olderIdeas");
-        const showMoreBtn = document.getElementById("showMoreBtn");
-        
+        var response = await fetch(url);
+        var csv = await response.text();
+        var rows = csv.split("\n").map(function(r) { return parseCSVRow(r); });
+        var list = document.getElementById("pendingTab");
+        var olderList = document.getElementById("olderIdeas");
+        var showMoreBtn = document.getElementById("showMoreBtn");
         if (rows.length <= 1) {
-          list.innerHTML = `
-            <div class="empty-state">
-              <i data-lucide="inbox"></i>
-              <p>Žádné nové nápady</p>
-            </div>
-          `;
+          list.innerHTML = '<div class="empty-state"><i data-lucide="inbox"></i><p>Žádné nové nápady</p></div>';
           showMoreBtn.classList.remove("show");
           lucide.createIcons();
           return;
         }
-        
-        const items = rows.slice(1).filter(r => r[0].trim() !== "");
-        
-        const recentItems = items.slice(0, 5);
-        list.innerHTML = recentItems.map((row, idx) => createIdeaHTML(row, idx)).join("");
-        
-        const olderItems = items.slice(5);
+        var items = rows.slice(1).filter(function(r) { return r[0] && r[0].trim() !== ""; });
+        var recentItems = items.slice(0, 5);
+        list.innerHTML = recentItems.map(function(row, idx) { return createIdeaHTML(row, idx); }).join("");
+        var olderItems = items.slice(5);
         if (olderItems.length > 0) {
-          olderList.innerHTML = olderItems.map((row, idx) => createIdeaHTML(row, idx + 5)).join("");
+          olderList.innerHTML = olderItems.map(function(row, idx) { return createIdeaHTML(row, idx + 5); }).join("");
           showMoreBtn.classList.add("show");
         } else {
           showMoreBtn.classList.remove("show");
         }
-        
         lucide.createIcons();
-        
       } catch (err) {
         console.error(err);
-        document.getElementById("pendingTab").innerHTML = `
-          <div class="empty-state">
-            <i data-lucide="alert-circle"></i>
-            <p>Chyba načítání dat</p>
-          </div>
-        `;
+        document.getElementById("pendingTab").innerHTML = '<div class="empty-state"><i data-lucide="alert-circle"></i><p>Chyba načítání dat</p></div>';
         lucide.createIcons();
       }
     }
-    
-    // Snowflakes & Particles
     function createSnowflake() {
-      const snowflake = document.createElement('div');
+      var snowflake = document.createElement('div');
       snowflake.className = 'snowflake';
       snowflake.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>';
       snowflake.style.left = Math.random() * 100 + '%';
@@ -918,16 +882,14 @@
       document.body.appendChild(snowflake);
       setTimeout(function() { snowflake.remove(); }, 10000);
     }
-    
     function createParticle() {
-      const particle = document.createElement('div');
+      var particle = document.createElement('div');
       particle.className = 'particle';
       particle.style.left = Math.random() * 100 + '%';
       particle.style.top = Math.random() * 100 + '%';
       particle.style.animationDelay = Math.random() * 5 + 's';
       document.body.appendChild(particle);
     }
-    
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setInterval(createSnowflake, 400);
       for (var i = 0; i < 10; i++) createSnowflake();
