@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Pekárna</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href__="https://fonts.googleapis.com">
+  <link rel="preconnect" href__="https://fonts.gstatic.com" crossorigin>
+  <link href__="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
@@ -543,73 +543,35 @@
       animation: float-particle 15s ease-in-out infinite;
     }
     .story-section { padding: 120px 20px; }
-    .story-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 40px;
-      max-width: 1400px;
+    .story-content {
+      max-width: 900px;
       margin: 80px auto 0;
-    }
-    .founder-card {
       background: rgba(10, 10, 10, 0.7);
       backdrop-filter: blur(20px);
       border-radius: 28px;
-      overflow: hidden;
+      padding: 50px 40px;
       border: 1px solid rgba(212, 163, 115, 0.2);
       transition: all 0.4s ease;
-      position: relative;
-      padding: 40px 32px;
-      text-align: center;
     }
-    body.light-mode .founder-card {
+    body.light-mode .story-content {
       background: rgba(255, 255, 255, 0.85);
       border: 1px solid rgba(212, 163, 115, 0.3);
     }
-    .founder-card:hover {
-      transform: translateY(-16px);
+    .story-content:hover {
+      transform: translateY(-8px);
       box-shadow: 0 24px 64px rgba(212, 163, 115, 0.3);
       border-color: rgba(212, 163, 115, 0.6);
     }
-    .founder-content { color: white; }
-    body.light-mode .founder-content { color: var(--dark); }
-    .founder-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #fff, var(--primary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .story-text {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: rgba(255, 255, 255, 0.85);
     }
-    body.light-mode .founder-name {
-      background: linear-gradient(135deg, var(--dark), var(--primary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .founder-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
-    .tag {
-      background: rgba(212, 163, 115, 0.2);
+    body.light-mode .story-text { color: rgba(0, 0, 0, 0.8); }
+    .story-text strong {
       color: var(--primary);
-      padding: 6px 14px;
-      border-radius: 50px;
-      font-size: 0.85rem;
       font-weight: 600;
-      border: 1px solid rgba(212, 163, 115, 0.3);
     }
-    body.light-mode .tag { background: rgba(212, 163, 115, 0.1); }
-    .founder-story {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.8);
-      margin-top: 16px;
-    }
-    body.light-mode .founder-story { color: rgba(0, 0, 0, 0.75); }
     @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
     @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
     @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5)); } 50% { filter: drop-shadow(0 0 30px rgba(212, 163, 115, 0.8)); } }
@@ -649,6 +611,8 @@
       .nav-menu { padding: 12px 16px; }
       .hero { height: 100svh; }
       .hero-transition { height: 40vh; }
+      .story-content { padding: 30px 24px; }
+      .story-text { font-size: 1rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -663,11 +627,11 @@
 <body>
   <div class="cyber-grid"></div>
   <nav class="nav-menu">
-    <a href="#" class="nav-logo">Super Pekárna</a>
+    <a href__="#" class="nav-logo">Super Pekárna</a>
     <div class="nav-center" id="navCenter">
       <div class="nav-links">
         <a onclick="scrollToSection('ideas'); closeMobileMenu();">Nápady</a>
-        <a onclick="scrollToSection('story'); closeMobileMenu();">Jak to vzniklo</a>
+        <a onclick="scrollToSection('story'); closeMobileMenu();">Vznik</a>
         <a onclick="scrollToSection('products'); closeMobileMenu();">Protokol</a>
       </div>
     </div>
@@ -709,35 +673,11 @@
     </div>
   </section>
   <section class="story-section" id="story">
-    <h2 class="section-title">Jak to vzniklo</h2>
-    <div class="story-grid">
-      <div class="founder-card">
-        <div class="founder-content">
-          <h3 class="founder-name">Teodor Novák</h3>
-          <div class="founder-tags"><span class="tag">Zakladatel</span></div>
-          <p class="founder-story">
-            Všechno začalo jednou tiktak krabičkou plnou zaschlýho těsta z mouky a vody, kterou jsem přinesl do školy. Druhý den už jsem měl pořádnou mouku a vodu a tím to celý šílenství odstartovalo.
-          </p>
-        </div>
-      </div>
-      <div class="founder-card">
-        <div class="founder-content">
-          <h3 class="founder-name">Adam Haluza</h3>
-          <div class="founder-tags">
-            <span class="tag">Zakladatel</span>
-            <span class="tag">Web</span>
-          </div>
-          <p class="founder-story">
-            Jednoho dne jsem přinesl do školy jen tak pro sranda jedno vajíčko a mouku. Z toho vznikl legendární M&M’s chleba – první pořádný výtvor Super Pekárny. A protože to muselo mít i web, tak jsem ho taky udělal já.
-          </p>
-        </div>
-      </div>
-      <div class="founder-card">
-        <div class="founder-content">
-          <h3 class="founder-name">Marek Warchil</h3>
-          <div class="founder-tags"><span class="tag">Zakladatel</span></div>
-        </div>
-      </div>
+    <h2 class="section-title">Vznik</h2>
+    <div class="story-content">
+      <p class="story-text">
+        Všechno to začalo jednou tiktak krabičkou plnou zaschlýho těsta z mouky a vody, kterou <strong>Teodor Novák</strong> přinesl do školy. Druhý den už měl pořádnou mouku a vodu a tím to celý šílenství odstartovalo. Pak přišel <strong>Adam Haluza</strong>, který jednoho dne přinesl do školy jen tak pro srandu jedno vajíčko a mouku – z toho vznikl legendární M&M's chleba, první pořádný výtvor Super Pekárny. A protože to muselo mít i web, tak ho taky udělal on. K týmu se přidal i <strong>Marek Warchil</strong> jako další zakladatel, a tak vznikla Super Pekárna, jak ji znáte dnes.
+      </p>
     </div>
   </section>
   <section id="products">
