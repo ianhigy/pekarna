@@ -528,28 +528,34 @@
       background-clip: text;
     }
     .footer-text { opacity: 0.6; font-size: 0.95rem; }
-    .snowflake {
-      position: fixed;
-      top: -20px;
-      color: white;
-      user-select: none;
-      pointer-events: none;
-      z-index: 9999;
-      animation: fall linear infinite;
-      opacity: 0.6;
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
-    }
-    .particle {
-      position: fixed;
-      width: 4px;
-      height: 4px;
-      background: var(--primary);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.3;
-      animation: float-particle 15s ease-in-out infinite;
-    }
+.snowflake {
+  position: fixed;
+  top: -20px;
+  user-select: none;
+  pointer-events: none;
+  z-index: 9999;
+  animation: fall linear infinite;
+  opacity: 0.6;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+}
+
+/* FA ikona uvnitř */
+.snowflake i {
+  transform: rotate(0deg);
+}
+
+.particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+  animation: float-particle 15s ease-in-out infinite;
+}
+
     .story-section { padding: 120px 20px; }
     .story-content {
       max-width: 900px;
@@ -865,29 +871,43 @@
       lucide.createIcons();
     }
     loadProducts();
-    function createSnowflake() {
-      const snowflake = document.createElement('div');
-      snowflake.className = 'snowflake';
-      snowflake.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>';
-      snowflake.style.left = Math.random() * 100 + '%';
-      snowflake.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
-      snowflake.style.animationDuration = (Math.random() * 4 + 6) + 's';
-      snowflake.style.opacity = Math.random() * 0.4 + 0.2;
-      document.body.appendChild(snowflake);
-      setTimeout(function() { snowflake.remove(); }, 10000);
-    }
-    function createParticle() {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 5 + 's';
-      document.body.appendChild(particle);
-    }
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setInterval(createSnowflake, 400);
-      for (var i = 0; i < 10; i++) createSnowflake();
-      for (var j = 0; j < 20; j++) createParticle();
+function createSnowflake() {
+  const snowflake = document.createElement('div'); 
+  snowflake.className = 'snowflake';
+
+  const icons = ["fa-circle", "fa-square", "fa-star", "fa-heart"];
+  const icon = icons[Math.floor(Math.random() * icons.length)];
+  const colors = ["#ff4d4d","#ffd84d","#4dff88","#4de0ff","#b84dff"];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+
+  snowflake.innerHTML = `<i class="fa ${icon}" aria-hidden="true"></i>`;
+  snowflake.style.color = color;
+
+  snowflake.style.left = Math.random() * 100 + '%';
+  snowflake.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+  snowflake.style.animationDuration = (Math.random() * 4 + 6) + 's';
+  snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+  snowflake.style.transform = `rotate(${Math.random() * 360}deg)`;
+  
+  document.body.appendChild(snowflake);
+  setTimeout(function() { snowflake.remove(); }, 10000);
+}
+
+function createParticle() {
+  const particle = document.createElement('div');
+  particle.className = 'particle';
+  particle.style.left = Math.random() * 100 + '%';
+  particle.style.top = Math.random() * 100 + '%';
+  particle.style.animationDelay = Math.random() * 5 + 's';
+  document.body.appendChild(particle);
+}
+
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  setInterval(createSnowflake, 400);
+  for (var i = 0; i < 10; i++) createSnowflake();
+  for (var j = 0; j < 20; j++) createParticle();
+}
+
     }
   </script>
 </body>
