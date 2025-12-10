@@ -624,6 +624,26 @@
       50% { transform: translateY(-50px) translateX(-30px); opacity: 0.3; }
       75% { transform: translateY(-150px) translateX(20px); opacity: 0.5; }
     }
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
     @media (max-width: 768px) {
       .nav-center {
         position: fixed;
@@ -636,6 +656,7 @@
         padding: 20px;
         border-bottom: 1px solid rgba(212, 163, 115, 0.2);
         display: none;
+        animation: slideDown 0.3s ease-out;
       }
       body.light-mode .nav-center {
         background: rgba(255, 255, 255, 0.95);
@@ -643,7 +664,21 @@
       }
       .nav-center.active { display: block; }
       .nav-links { flex-direction: column; gap: 16px; }
-      .mobile-menu-btn { display: flex; align-items: center; justify-content: center; }
+      .nav-links a {
+        animation: slideInRight 0.4s ease-out backwards;
+      }
+      .nav-links a:nth-child(1) { animation-delay: 0.1s; }
+      .nav-links a:nth-child(2) { animation-delay: 0.2s; }
+      .nav-links a:nth-child(3) { animation-delay: 0.3s; }
+      .mobile-menu-btn { 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        transition: transform 0.3s ease;
+      }
+      .mobile-menu-btn.active {
+        transform: rotate(90deg);
+      }
       .products-grid { grid-template-columns: 1fr; gap: 24px; }
       section { padding: 60px 16px; }
       .contact-card { padding: 40px 24px; margin: 40px 16px 0; }
@@ -831,8 +866,11 @@
     }
     function toggleMobileMenu() {
       const navCenter = document.getElementById('navCenter');
+      const menuBtn = document.getElementById('mobileMenuBtn');
       const menuIcon = document.getElementById('menuIcon');
       const isActive = navCenter.classList.toggle('active');
+      menuBtn.classList.toggle('active');
+      
       if (isActive) {
         menuIcon.setAttribute('data-lucide', 'x');
       } else {
@@ -842,8 +880,10 @@
     }
     function closeMobileMenu() {
       const navCenter = document.getElementById('navCenter');
+      const menuBtn = document.getElementById('mobileMenuBtn');
       const menuIcon = document.getElementById('menuIcon');
       navCenter.classList.remove('active');
+      menuBtn.classList.remove('active');
       menuIcon.setAttribute('data-lucide', 'menu');
       lucide.createIcons();
     }
