@@ -1,5 +1,9 @@
 {
   "rewrites": [
-    { "source": "/betaad", "destination": "/betaad.html", "source": "/test", "destination": "/test.html", "source": "/beta", "destination": "/beta.html", "source": "/betaad", "destination": "/betaad.html", "source": "/index", "destination": "/index.html", "source": "/admin", "destination": "/admin.html" }
+    { "source": "/betaad", "destination": "/betaad.html" },
+    { "source": "/test", "destination": "/test.html" },
+    { "source": "/beta", "destination": "/beta.html" },
+    { "source": "/index", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/admin.html" }
   ]
 }
