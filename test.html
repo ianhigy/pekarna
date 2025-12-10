@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
@@ -557,12 +558,12 @@
     body.light-mode .footer-text { opacity: 0.7; }
     .confetti {
       position: fixed;
-      width: 10px;
-      height: 10px;
       user-select: none;
       pointer-events: none;
       z-index: 9999;
       animation: fall-confetti linear infinite;
+      font-size: 1.5rem;
+      font-weight: bold;
     }
     .particle {
       position: fixed;
@@ -895,14 +896,14 @@
     }
     loadProducts();
     function createConfetti() {
-      const confetti = document.createElement('div');
+      const confetti = document.createElement('i');
       confetti.className = 'confetti';
       const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe', '#fd79a8', '#fdcb6e', '#e17055', '#00b894'];
-      const shapes = ['◆', '●', '■', '▲', '★'];
-      confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+      const icons = ['fa-solid fa-star', 'fa-solid fa-heart', 'fa-solid fa-circle', 'fa-solid fa-square', 'fa-solid fa-certificate', 'fa-solid fa-gem', 'fa-solid fa-crown', 'fa-solid fa-snowflake'];
+      confetti.className = 'confetti ' + icons[Math.floor(Math.random() * icons.length)];
       confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
       confetti.style.left = Math.random() * 100 + '%';
-      confetti.style.fontSize = (Math.random() * 1 + 0.5) + 'rem';
+      confetti.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
       confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
       confetti.style.opacity = Math.random() * 0.6 + 0.4;
       document.body.appendChild(confetti);
