@@ -1,6 +1,5 @@
 {
   "rewrites": [
-    { "source": "/betaad", "destination": "/betaad.html" }
-    { "source": "/test", "destination": "/test.html" }
+    { "source": "/betaad", "destination": "/betaad.html", "source": "/test", "destination": "/test.html" }
   ]
 }
