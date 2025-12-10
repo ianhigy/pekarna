@@ -4,9 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Pekárna</title>
-  <link rel="preconnect" href__="https://fonts.googleapis.com">
-  <link rel="preconnect" href__="https://fonts.gstatic.com" crossorigin>
-  <link href__="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="sp.webp">
+  <link rel="apple-touch-icon" href="sp.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
@@ -227,6 +229,11 @@
       font-weight: 500;
       animation: float 3s ease-in-out infinite;
     }
+    body.light-mode .announcement {
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--dark);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(212, 163, 115, 0.3);
+    }
     .announcement.hidden { display: none; }
     .announcement-icon {
       color: var(--primary);
@@ -252,11 +259,13 @@
       justify-content: center;
       border-radius: 50%;
     }
+    body.light-mode .close-btn { color: var(--dark); }
     .close-btn:hover {
       opacity: 1;
       background: rgba(255, 255, 255, 0.2);
       transform: translateY(-50%) rotate(90deg);
     }
+    body.light-mode .close-btn:hover { background: rgba(0, 0, 0, 0.1); }
     section {
       padding: 100px 20px;
       max-width: 1400px;
@@ -506,6 +515,12 @@
       position: relative;
       overflow: hidden;
       border-top: 1px solid rgba(212, 163, 115, 0.2);
+      transition: all 0.5s ease;
+    }
+    body.light-mode footer {
+      background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+      color: var(--dark);
+      border-top: 1px solid rgba(212, 163, 115, 0.3);
     }
     footer::before {
       content: '';
@@ -518,6 +533,7 @@
       background: var(--gradient-warm);
       box-shadow: var(--neon-glow);
     }
+    body.light-mode footer::before { box-shadow: none; }
     .footer-logo {
       font-family: 'Playfair Display', serif;
       font-size: 2.5rem;
@@ -527,17 +543,26 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .footer-text { opacity: 0.6; font-size: 0.95rem; }
-    .snowflake {
+    body.light-mode .footer-logo {
+      background: linear-gradient(135deg, #1a1a1a 0%, #d4a373 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-text { 
+      opacity: 0.6; 
+      font-size: 0.95rem;
+      transition: opacity 0.5s ease;
+    }
+    body.light-mode .footer-text { opacity: 0.7; }
+    .confetti {
       position: fixed;
-      top: -20px;
-      color: white;
+      width: 10px;
+      height: 10px;
       user-select: none;
       pointer-events: none;
       z-index: 9999;
-      animation: fall linear infinite;
-      opacity: 0.6;
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+      animation: fall-confetti linear infinite;
     }
     .particle {
       position: fixed;
@@ -580,7 +605,11 @@
       color: var(--primary);
       font-weight: 600;
     }
-    @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
+    @keyframes fall-confetti { 
+      to { 
+        transform: translateY(100vh) rotate(720deg); 
+      } 
+    }
     @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
     @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5)); } 50% { filter: drop-shadow(0 0 30px rgba(212, 163, 115, 0.8)); } }
     @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -634,14 +663,14 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      .snowflake, .particle { display: none; }
+      .confetti, .particle { display: none; }
     }
   </style>
 </head>
 <body>
   <div class="cyber-grid"></div>
   <nav class="nav-menu">
-    <a href__="#" class="nav-logo">Super Pekárna</a>
+    <a href="#" class="nav-logo">Super Pekárna</a>
     <div class="nav-center" id="navCenter">
       <div class="nav-links">
         <a onclick="scrollToSection('ideas'); closeMobileMenu();">Nápady</a>
@@ -690,7 +719,7 @@
     <h2 class="section-title">Vznik</h2>
     <div class="story-content">
       <p class="story-text">
-        Jednoho dne přinesl <strong>Teodor</strong> do školy ztvrdlé těsto v krabičce od TicTac. V následujících dneh donesl <strong>Adam</strong>  mouku, cukr a vajíčko, a vznikl náš první výtvor – <strong>M&M’s chléb</strong>. Nejsme však žádná sólovka, jsme tým: <strong>Marek</strong> vaří s námi, rozdělujeme si ingredience férově a právě on přišel s názvem naší <strong>„Super Pekárny“</strong>. Od té doby tvoříme jeden výtvor za druhým.
+        Jednoho dne přinesl <strong>Teodor</strong> do školy ztvrdlé těsto v krabičce od TicTac. V následujících dnech donesl <strong>Adam</strong> mouku, cukr a vajíčko, a vznikl náš první výtvor – <strong>M&M's chléb</strong>. Nejsme však žádná sólovka, jsme tým: <strong>Marek</strong> vaří s námi, rozdělujeme si ingredience férově a právě on přišel s názvem naší <strong>„Super Pekárny"</strong>. Od té doby tvoříme jeden výtvor za druhým.
       </p>
     </div>
   </section>
@@ -765,11 +794,11 @@
         created: "Neznámé"
       },
       {
-        name: "M&M´s Chléb",
+        name: "M&M's Chléb",
         description: "",
         image: "mams_chleb.webp",
         rating: 0,
-        ingredients: "Mouka, Vajíčka, Cukr, Bonbóny M&M´s",
+        ingredients: "Mouka, Vajíčka, Cukr, Bonbóny M&M's",
         created: "Neznámé"
       }
     ];
@@ -865,16 +894,19 @@
       lucide.createIcons();
     }
     loadProducts();
-    function createSnowflake() {
-      const snowflake = document.createElement('div');
-      snowflake.className = 'snowflake';
-      snowflake.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>';
-      snowflake.style.left = Math.random() * 100 + '%';
-      snowflake.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
-      snowflake.style.animationDuration = (Math.random() * 4 + 6) + 's';
-      snowflake.style.opacity = Math.random() * 0.4 + 0.2;
-      document.body.appendChild(snowflake);
-      setTimeout(function() { snowflake.remove(); }, 10000);
+    function createConfetti() {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe', '#fd79a8', '#fdcb6e', '#e17055', '#00b894'];
+      const shapes = ['◆', '●', '■', '▲', '★'];
+      confetti.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+      confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.fontSize = (Math.random() * 1 + 0.5) + 'rem';
+      confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      confetti.style.opacity = Math.random() * 0.6 + 0.4;
+      document.body.appendChild(confetti);
+      setTimeout(function() { confetti.remove(); }, 6000);
     }
     function createParticle() {
       const particle = document.createElement('div');
@@ -885,8 +917,8 @@
       document.body.appendChild(particle);
     }
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setInterval(createSnowflake, 400);
-      for (var i = 0; i < 10; i++) createSnowflake();
+      setInterval(createConfetti, 300);
+      for (var i = 0; i < 15; i++) createConfetti();
       for (var j = 0; j < 20; j++) createParticle();
     }
   </script>
