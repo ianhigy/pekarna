@@ -614,11 +614,7 @@
       color: var(--primary);
       font-weight: 600;
     }
-    @keyframes fall-confetti { 
-      to { 
-        transform: translateY(100vh) rotate(720deg); 
-      } 
-    }
+    @keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }
     @keyframes float { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-10px); } }
     @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5)); } 50% { filter: drop-shadow(0 0 30px rgba(212, 163, 115, 0.8)); } }
     @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -672,7 +668,7 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      .confetti, .particle { display: none; }
+      .snowflake, .particle { display: none; }
     }
   </style>
 </head>
@@ -903,19 +899,16 @@
       lucide.createIcons();
     }
     loadProducts();
-    function createConfetti() {
-      const confetti = document.createElement('i');
-      confetti.className = 'confetti';
-      const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#6c5ce7', '#a29bfe', '#fd79a8', '#fdcb6e', '#e17055', '#00b894'];
-      const icons = ['fa-solid fa-star', 'fa-solid fa-heart', 'fa-solid fa-circle', 'fa-solid fa-square', 'fa-solid fa-certificate', 'fa-solid fa-gem', 'fa-solid fa-crown', 'fa-solid fa-snowflake'];
-      confetti.className = 'confetti ' + icons[Math.floor(Math.random() * icons.length)];
-      confetti.style.color = colors[Math.floor(Math.random() * colors.length)];
-      confetti.style.left = Math.random() * 100 + '%';
-      confetti.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
-      confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
-      confetti.style.opacity = Math.random() * 0.6 + 0.4;
-      document.body.appendChild(confetti);
-      setTimeout(function() { confetti.remove(); }, 6000);
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.className = 'snowflake';
+      snowflake.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg>';
+      snowflake.style.left = Math.random() * 100 + '%';
+      snowflake.style.fontSize = (Math.random() * 1.2 + 0.6) + 'rem';
+      snowflake.style.animationDuration = (Math.random() * 4 + 6) + 's';
+      snowflake.style.opacity = Math.random() * 0.4 + 0.2;
+      document.body.appendChild(snowflake);
+      setTimeout(function() { snowflake.remove(); }, 10000);
     }
     function createParticle() {
       const particle = document.createElement('div');
@@ -926,8 +919,8 @@
       document.body.appendChild(particle);
     }
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setInterval(createConfetti, 300);
-      for (var i = 0; i < 15; i++) createConfetti();
+      setInterval(createSnowflake, 400);
+      for (var i = 0; i < 10; i++) createSnowflake();
       for (var j = 0; j < 20; j++) createParticle();
     }
   </script>
