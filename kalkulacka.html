@@ -2,13 +2,14 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kalkulačka</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -17,86 +18,158 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
-            padding: 20px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f0f0f 100%);
+            padding: 16px;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(255, 149, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 100, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(100, 50, 200, 0.04) 0%, transparent 50%);
+            animation: backgroundPulse 15s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 0.8; }
         }
 
         .calculator {
-            background: rgba(20, 20, 22, 0.65);
-            backdrop-filter: blur(80px) saturate(200%);
-            -webkit-backdrop-filter: blur(80px) saturate(200%);
-            padding: 18px;
-            border-radius: 48px;
+            background: rgba(28, 28, 32, 0.45);
+            backdrop-filter: blur(100px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(100px) saturate(200%) brightness(1.1);
+            padding: 16px;
+            border-radius: 44px;
             box-shadow: 
-                0 12px 48px rgba(0, 0, 0, 0.5),
-                0 0 0 0.5px rgba(255, 255, 255, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+                0 25px 80px rgba(0, 0, 0, 0.6),
+                0 0 0 0.5px rgba(255, 255, 255, 0.18),
+                inset 0 1px 1px rgba(255, 255, 255, 0.12),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 400px;
-            transition: all 0.3s ease;
+            max-width: 360px;
+            animation: calculatorAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        @keyframes calculatorAppear {
+            0% { 
+                opacity: 0; 
+                transform: scale(0.8) translateY(50px) rotateX(10deg);
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1) translateY(0) rotateX(0);
+            }
+        }
+
+        @media (min-width: 480px) {
+            .calculator {
+                max-width: 420px;
+                padding: 20px;
+                border-radius: 48px;
+            }
         }
 
         @media (min-width: 768px) {
             .calculator {
-                max-width: 500px;
-                padding: 22px;
+                max-width: 480px;
+                padding: 24px;
                 border-radius: 52px;
             }
         }
 
-        @media (min-width: 1200px) {
+        @media (min-width: 1024px) {
             .calculator {
-                max-width: 900px;
-                padding: 30px;
+                max-width: 520px;
+                padding: 28px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            body {
+                padding: 40px;
+            }
+            
+            .calculator {
+                max-width: 1000px;
+                padding: 32px;
                 border-radius: 56px;
             }
             
             .calculator-content {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 30px;
+                grid-template-columns: 1fr 1.2fr;
+                gap: 32px;
+                align-items: start;
             }
 
             .left-section {
                 display: flex;
                 flex-direction: column;
+                gap: 16px;
             }
 
             .messages {
+                margin-top: 0;
                 flex: 1;
+                min-height: 300px;
+                max-height: 450px;
             }
         }
 
         .display {
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(30px) brightness(0.9);
-            -webkit-backdrop-filter: blur(30px) brightness(0.9);
-            padding: 30px 24px;
-            border-radius: 32px;
-            margin-bottom: 18px;
-            min-height: 130px;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(40px) brightness(0.85);
+            -webkit-backdrop-filter: blur(40px) brightness(0.85);
+            padding: 24px 20px;
+            border-radius: 28px;
+            margin-bottom: 14px;
+            min-height: 110px;
             text-align: right;
-            font-size: 68px;
-            font-weight: 200;
+            font-size: 52px;
+            font-weight: 300;
             color: #ffffff;
             word-wrap: break-word;
+            word-break: break-all;
             box-shadow: 
-                inset 0 3px 12px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                0 1px 0 rgba(255, 255, 255, 0.1);
+                inset 0 4px 20px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                0 1px 0 rgba(255, 255, 255, 0.08);
             display: flex;
             align-items: flex-end;
             justify-content: flex-end;
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            transition: all 0.3s ease;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+            letter-spacing: -1px;
+        }
+
+        @media (min-width: 480px) {
+            .display {
+                min-height: 130px;
+                font-size: 64px;
+                padding: 28px 24px;
+                border-radius: 32px;
+            }
         }
 
         @media (min-width: 768px) {
             .display {
                 min-height: 150px;
                 font-size: 76px;
-                padding: 35px 28px;
+                padding: 32px 28px;
             }
         }
 
@@ -104,23 +177,57 @@
             .display {
                 min-height: 170px;
                 font-size: 84px;
+                padding: 36px 32px;
             }
         }
 
         .display.small-text {
-            font-size: 28px;
+            font-size: 22px;
+            letter-spacing: 0;
+        }
+
+        @media (min-width: 480px) {
+            .display.small-text {
+                font-size: 26px;
+            }
         }
 
         @media (min-width: 768px) {
             .display.small-text {
-                font-size: 32px;
+                font-size: 30px;
+            }
+        }
+
+        .display.calculating {
+            animation: displayPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes displayPulse {
+            0%, 100% { 
+                box-shadow: 
+                    inset 0 4px 20px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                    0 1px 0 rgba(255, 255, 255, 0.08);
+            }
+            50% { 
+                box-shadow: 
+                    inset 0 4px 20px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+                    0 1px 0 rgba(255, 255, 255, 0.08),
+                    0 0 30px rgba(255, 149, 0, 0.2);
             }
         }
 
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 10px;
+        }
+
+        @media (min-width: 480px) {
+            .buttons {
+                gap: 12px;
+            }
         }
 
         @media (min-width: 768px) {
@@ -137,209 +244,382 @@
 
         button {
             padding: 0;
-            height: 75px;
-            font-size: 30px;
+            aspect-ratio: 1;
+            height: auto;
+            font-size: 26px;
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 400;
-            backdrop-filter: blur(50px) saturate(200%);
-            -webkit-backdrop-filter: blur(50px) saturate(200%);
+            backdrop-filter: blur(60px) saturate(200%);
+            -webkit-backdrop-filter: blur(60px) saturate(200%);
             box-shadow: 
-                0 6px 20px rgba(0, 0, 0, 0.35),
-                0 0 0 0.5px rgba(255, 255, 255, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15),
-                inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                0 0 0 0.5px rgba(255, 255, 255, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        button:hover::before {
+            opacity: 1;
+        }
+
+        @media (min-width: 480px) {
+            button {
+                font-size: 30px;
+            }
         }
 
         @media (min-width: 768px) {
             button {
-                height: 85px;
                 font-size: 34px;
             }
         }
 
         @media (min-width: 1200px) {
             button {
-                height: 95px;
                 font-size: 38px;
             }
         }
 
         button:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px) scale(1.02);
             box-shadow: 
-                0 8px 24px rgba(0, 0, 0, 0.4),
+                0 12px 35px rgba(0, 0, 0, 0.5),
                 0 0 0 0.5px rgba(255, 255, 255, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
         button:active {
-            transform: translateY(0px) scale(0.97);
+            transform: translateY(1px) scale(0.96);
             box-shadow: 
-                0 3px 12px rgba(0, 0, 0, 0.3),
-                0 0 0 0.5px rgba(255, 255, 255, 0.18),
-                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+                0 4px 15px rgba(0, 0, 0, 0.35),
+                0 0 0 0.5px rgba(255, 255, 255, 0.15),
+                inset 0 3px 8px rgba(0, 0, 0, 0.35);
+            transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .number {
-            background: rgba(50, 50, 53, 0.9);
+            background: rgba(58, 58, 62, 0.85);
             color: #ffffff;
         }
 
         .number:hover {
-            background: rgba(60, 60, 63, 0.95);
+            background: rgba(75, 75, 80, 0.9);
+        }
+
+        .number:active {
+            background: rgba(90, 90, 95, 0.95);
         }
 
         .operator {
-            background: linear-gradient(135deg, rgba(255, 159, 10, 0.95), rgba(255, 139, 0, 0.95));
+            background: linear-gradient(145deg, rgba(255, 165, 20, 0.95), rgba(255, 130, 0, 0.95));
             color: #ffffff;
             font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .operator:hover {
-            background: linear-gradient(135deg, rgba(255, 169, 20, 1), rgba(255, 149, 10, 1));
+            background: linear-gradient(145deg, rgba(255, 180, 40, 1), rgba(255, 150, 20, 1));
+        }
+
+        .operator:active {
+            background: linear-gradient(145deg, rgba(255, 200, 60, 1), rgba(255, 170, 40, 1));
         }
 
         .top {
-            background: rgba(175, 175, 178, 0.9);
-            color: #000000;
+            background: rgba(180, 180, 185, 0.85);
+            color: #1a1a1a;
             font-weight: 500;
         }
 
         .top:hover {
-            background: rgba(185, 185, 188, 0.95);
+            background: rgba(200, 200, 205, 0.9);
+        }
+
+        .top:active {
+            background: rgba(220, 220, 225, 0.95);
         }
 
         .zero {
             grid-column: span 2;
-            border-radius: 37.5px;
+            border-radius: 100px;
+            aspect-ratio: auto;
+            height: 100%;
             text-align: left;
-            padding-left: 32px;
+            padding-left: 28px;
+        }
+
+        @media (min-width: 480px) {
+            .zero {
+                padding-left: 32px;
+            }
         }
 
         @media (min-width: 768px) {
             .zero {
-                border-radius: 42.5px;
                 padding-left: 38px;
             }
         }
 
         @media (min-width: 1200px) {
             .zero {
-                border-radius: 47.5px;
                 padding-left: 44px;
             }
         }
 
         .messages {
-            margin-top: 18px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 32px;
-            min-height: 140px;
-            max-height: 200px;
+            margin-top: 14px;
+            padding: 18px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(50px) saturate(180%);
+            -webkit-backdrop-filter: blur(50px) saturate(180%);
+            border-radius: 28px;
+            min-height: 120px;
+            max-height: 180px;
             overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: 
-                inset 0 3px 12px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05),
-                0 1px 0 rgba(255, 255, 255, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
+                inset 0 4px 16px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04),
+                0 1px 0 rgba(255, 255, 255, 0.06);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (min-width: 768px) {
+            .messages {
+                min-height: 140px;
+                max-height: 200px;
+                padding: 20px;
+            }
         }
 
         @media (min-width: 1200px) {
             .messages {
-                max-height: 500px;
+                max-height: 450px;
             }
         }
 
         .messages::-webkit-scrollbar {
-            width: 10px;
+            width: 8px;
         }
 
         .messages::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
         }
 
         .messages::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, rgba(255, 149, 0, 0.5), rgba(255, 119, 0, 0.5));
-            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 149, 0, 0.4), rgba(255, 100, 0, 0.4));
+            border-radius: 10px;
         }
 
         .messages::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, rgba(255, 149, 0, 0.7), rgba(255, 119, 0, 0.7));
+            background: linear-gradient(180deg, rgba(255, 149, 0, 0.6), rgba(255, 100, 0, 0.6));
         }
 
         .progress-container {
-            margin-bottom: 18px;
-            padding: 16px 20px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border-radius: 24px;
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
+            margin-bottom: 14px;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(50px) saturate(180%);
+            -webkit-backdrop-filter: blur(50px) saturate(180%);
+            border-radius: 22px;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
             box-shadow: 
-                inset 0 2px 8px rgba(0, 0, 0, 0.3),
-                0 1px 0 rgba(255, 255, 255, 0.08);
+                inset 0 3px 12px rgba(0, 0, 0, 0.35),
+                0 1px 0 rgba(255, 255, 255, 0.06);
+            animation: fadeInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .progress-label {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 13px;
             margin-bottom: 10px;
             text-align: right;
-            font-weight: 500;
-            letter-spacing: 0.5px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
         }
 
         .progress-bar {
             width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(10px);
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
         }
 
         .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #ff9500, #ff6b00, #ff4500);
-            transition: width 0.3s ease;
-            border-radius: 12px;
-            box-shadow: 0 0 16px rgba(255, 149, 0, 0.7);
+            background: linear-gradient(90deg, #ff9500, #ff6b00, #ff4500, #ff6b00, #ff9500);
+            background-size: 200% 100%;
+            transition: width 0.2s ease;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 20px rgba(255, 149, 0, 0.6),
+                0 0 40px rgba(255, 100, 0, 0.3);
+            animation: shimmer 2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .message {
-            padding: 14px 16px;
-            margin: 10px 0;
-            background: rgba(255, 255, 255, 0.08);
+            padding: 12px 14px;
+            margin: 8px 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
             backdrop-filter: blur(20px);
-            border-left: 4px solid #ff9500;
-            border-radius: 16px;
+            border-left: 3px solid;
+            border-image: linear-gradient(180deg, #ff9500, #ff6b00) 1;
+            border-radius: 14px;
             color: rgba(255, 255, 255, 0.95);
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 400;
-            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: messageSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             box-shadow: 
-                0 4px 12px rgba(0, 0, 0, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            letter-spacing: 0.3px;
+                0 4px 15px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            letter-spacing: 0.2px;
+            line-height: 1.4;
         }
 
-        @keyframes slideIn {
-            from {
+        @keyframes messageSlideIn {
+            0% {
                 opacity: 0;
-                transform: translateX(-30px);
+                transform: translateX(-40px) scale(0.9);
             }
-            to {
+            100% {
                 opacity: 1;
-                transform: translateX(0);
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .message.fadeOut {
+            animation: messageFadeOut 0.4s ease forwards;
+        }
+
+        @keyframes messageFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(40px) scale(0.9);
+            }
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: rippleEffect 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes rippleEffect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Landscape mode for mobile */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .calculator {
+                max-width: 700px;
+                padding: 12px;
+                border-radius: 32px;
+            }
+            
+            .calculator-content {
+                display: grid;
+                grid-template-columns: 1fr 1.5fr;
+                gap: 16px;
+            }
+            
+            .display {
+                min-height: 80px;
+                font-size: 40px;
+                padding: 16px;
+                border-radius: 20px;
+                margin-bottom: 8px;
+            }
+            
+            .display.small-text {
+                font-size: 18px;
+            }
+            
+            .messages {
+                margin-top: 8px;
+                min-height: 60px;
+                max-height: 100px;
+                padding: 10px;
+            }
+            
+            .progress-container {
+                margin-bottom: 8px;
+                padding: 10px 14px;
+            }
+            
+            button {
+                font-size: 22px;
+            }
+            
+            .buttons {
+                gap: 8px;
+            }
+        }
+
+        /* Dark mode improvements */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #000000 0%, #0a0a15 50%, #000000 100%);
+            }
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -359,29 +639,29 @@
             </div>
             <div class="right-section">
                 <div class="buttons">
-                    <button class="top" onclick="clearDisplay()">C</button>
-                    <button class="top" onclick="toggleSign()">+/−</button>
-                    <button class="top" onclick="appendOperator('%')">%</button>
-                    <button class="operator" onclick="appendOperator('÷')">÷</button>
+                    <button class="top" onclick="clearDisplay(event)">C</button>
+                    <button class="top" onclick="toggleSign(event)">+/−</button>
+                    <button class="top" onclick="appendOperator('%', event)">%</button>
+                    <button class="operator" onclick="appendOperator('÷', event)">÷</button>
                     
-                    <button class="number" onclick="appendNumber('7')">7</button>
-                    <button class="number" onclick="appendNumber('8')">8</button>
-                    <button class="number" onclick="appendNumber('9')">9</button>
-                    <button class="operator" onclick="appendOperator('×')">×</button>
+                    <button class="number" onclick="appendNumber('7', event)">7</button>
+                    <button class="number" onclick="appendNumber('8', event)">8</button>
+                    <button class="number" onclick="appendNumber('9', event)">9</button>
+                    <button class="operator" onclick="appendOperator('×', event)">×</button>
                     
-                    <button class="number" onclick="appendNumber('4')">4</button>
-                    <button class="number" onclick="appendNumber('5')">5</button>
-                    <button class="number" onclick="appendNumber('6')">6</button>
-                    <button class="operator" onclick="appendOperator('−')">−</button>
+                    <button class="number" onclick="appendNumber('4', event)">4</button>
+                    <button class="number" onclick="appendNumber('5', event)">5</button>
+                    <button class="number" onclick="appendNumber('6', event)">6</button>
+                    <button class="operator" onclick="appendOperator('−', event)">−</button>
                     
-                    <button class="number" onclick="appendNumber('1')">1</button>
-                    <button class="number" onclick="appendNumber('2')">2</button>
-                    <button class="number" onclick="appendNumber('3')">3</button>
-                    <button class="operator" onclick="appendOperator('+')">+</button>
+                    <button class="number" onclick="appendNumber('1', event)">1</button>
+                    <button class="number" onclick="appendNumber('2', event)">2</button>
+                    <button class="number" onclick="appendNumber('3', event)">3</button>
+                    <button class="operator" onclick="appendOperator('+', event)">+</button>
                     
-                    <button class="number zero" onclick="appendNumber('0')">0</button>
-                    <button class="number" onclick="appendDecimal()">.</button>
-                    <button class="operator" onclick="calculate()">=</button>
+                    <button class="number zero" onclick="appendNumber('0', event)">0</button>
+                    <button class="number" onclick="appendDecimal(event)">.</button>
+                    <button class="operator" onclick="calculate(event)">=</button>
                 </div>
             </div>
         </div>
@@ -390,6 +670,7 @@
     <script>
         let currentInput = '0';
         let calculating = false;
+        let usedMessages = [];
 
         const funnyMessages = [
             '🤔 Hmm, to vypadá složitě...',
@@ -398,11 +679,38 @@
             '☕ Dávám si kafíčko, chvilku strpení...',
             '🔮 Hádám výsledek z křišťálové koule...',
             '🎵 Zpívám si "Let it go"...',
-            '🚀 Kradu data z NASA'
-            '😭 Bože já tuto práci nesnáším'
+            '🚀 Kradu data z NASA...',
+            '😭 Bože já tuto práci nesnáším...',
+            '🎲 Házím kostkou a doufám v nejlepší...',
+            '🤖 Ptám se ChatGPT jestli ví...',
+            '🍕 Objednávám pizzu, to potrvá...',
+            '🦥 Pracuji rychlostí lenochoda...',
+            '🌙 Čekám na úplněk pro lepší výsledky...',
+            '📞 Volám mámě, ta to určitě ví...',
+            '🎰 Zkouším štěstí v loterii...',
+            '🧙‍♂️ Čtu zaklínadlo pro správný výsledek...'
         ];  
 
-        function appendNumber(num) {
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.className = 'ripple';
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        function appendNumber(num, event) {
+            if (event) createRipple(event);
             if (calculating) return;
             if (currentInput === '0') {
                 currentInput = num;
@@ -412,7 +720,8 @@
             updateDisplay();
         }
 
-        function appendOperator(op) {
+        function appendOperator(op, event) {
+            if (event) createRipple(event);
             if (calculating) return;
             const lastChar = currentInput.slice(-1);
             if (['+', '−', '×', '÷', '%'].includes(lastChar)) {
@@ -423,15 +732,26 @@
             updateDisplay();
         }
 
-        function appendDecimal() {
+        function appendDecimal(event) {
+            if (event) createRipple(event);
             if (calculating) return;
-            if (!currentInput.includes('.')) {
-                currentInput += '.';
+            
+            // Najdi poslední číslo v inputu
+            const parts = currentInput.split(/[+−×÷%]/);
+            const lastPart = parts[parts.length - 1];
+            
+            if (!lastPart.includes('.')) {
+                if (lastPart === '' || currentInput.slice(-1).match(/[+−×÷%]/)) {
+                    currentInput += '0.';
+                } else {
+                    currentInput += '.';
+                }
             }
             updateDisplay();
         }
 
-        function toggleSign() {
+        function toggleSign(event) {
+            if (event) createRipple(event);
             if (calculating) return;
             if (currentInput.startsWith('-')) {
                 currentInput = currentInput.slice(1);
@@ -441,41 +761,76 @@
             updateDisplay();
         }
 
-        function clearDisplay() {
+        function clearDisplay(event) {
+            if (event) createRipple(event);
             currentInput = '0';
             calculating = false;
+            usedMessages = [];
             document.getElementById('messages').innerHTML = '';
             document.getElementById('progressContainer').style.display = 'none';
-            document.getElementById('display').classList.remove('small-text');
+            document.getElementById('display').classList.remove('small-text', 'calculating');
             updateDisplay();
         }
 
         function updateDisplay() {
             const display = document.getElementById('display');
             display.textContent = currentInput;
-            if (currentInput.length > 10) {
+            if (currentInput.length > 8) {
                 display.classList.add('small-text');
             } else {
                 display.classList.remove('small-text');
             }
         }
 
-        function addMessage(text) {
-            const messagesDiv = document.getElementById('messages');
-            const messageEl = document.createElement('div');
-            messageEl.className = 'message';
-            messageEl.textContent = text;
-            messagesDiv.appendChild(messageEl);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        function getRandomMessage() {
+            // Pokud byly použity všechny zprávy, resetuj
+            if (usedMessages.length >= funnyMessages.length) {
+                usedMessages = [];
+            }
+            
+            // Najdi zprávy, které ještě nebyly použity
+            const availableMessages = funnyMessages.filter(msg => !usedMessages.includes(msg));
+            
+            // Vyber náhodnou zprávu z dostupných
+            const randomIndex = Math.floor(Math.random() * availableMessages.length);
+            const selectedMessage = availableMessages[randomIndex];
+            
+            // Přidej do použitých
+            usedMessages.push(selectedMessage);
+            
+            return selectedMessage;
         }
 
-        function calculate() {
+        function addMessage(text) {
+            const messagesDiv = document.getElementById('messages');
+            
+            // Fade out existující zprávy
+            const existingMessages = messagesDiv.querySelectorAll('.message');
+            existingMessages.forEach(msg => {
+                msg.classList.add('fadeOut');
+            });
+            
+            setTimeout(() => {
+                messagesDiv.innerHTML = '';
+                const messageEl = document.createElement('div');
+                messageEl.className = 'message';
+                messageEl.textContent = text;
+                messagesDiv.appendChild(messageEl);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, existingMessages.length > 0 ? 400 : 0);
+        }
+
+        function calculate(event) {
+            if (event) createRipple(event);
             if (calculating) return;
             calculating = true;
+            usedMessages = [];
             
+            const display = document.getElementById('display');
             const messagesDiv = document.getElementById('messages');
             messagesDiv.innerHTML = '';
             
+            display.classList.add('calculating');
             document.getElementById('progressContainer').style.display = 'block';
             
             let progress = 0;
@@ -489,34 +844,72 @@
                 }
             }, 100);
 
-            let messageIndex = 0;
+            // První zpráva hned
+            addMessage(getRandomMessage());
+
             const messageInterval = setInterval(() => {
-                messagesDiv.innerHTML = '';
-                if (messageIndex < funnyMessages.length) {
-                    const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
-                    addMessage(randomMessage);
-                    messageIndex++;
-                } else {
-                    clearInterval(messageInterval);
-                }
+                addMessage(getRandomMessage());
             }, 2000);
 
             setTimeout(() => {
                 clearInterval(progressInterval);
                 clearInterval(messageInterval);
-                document.getElementById('display').textContent = 'Já nevím vole, nech mě být.';
-                document.getElementById('display').classList.add('small-text');
+                display.classList.remove('calculating');
+                display.textContent = 'Já nevím vole, nech mě být.';
+                display.classList.add('small-text');
                 document.getElementById('progressContainer').style.display = 'none';
-                messagesDiv.innerHTML = '';
+                
+                // Fade out poslední zprávy
+                const lastMessages = messagesDiv.querySelectorAll('.message');
+                lastMessages.forEach(msg => msg.classList.add('fadeOut'));
+                setTimeout(() => {
+                    messagesDiv.innerHTML = '';
+                }, 400);
                 
                 setTimeout(() => {
-                    document.getElementById('display').classList.remove('small-text');
+                    display.classList.remove('small-text');
                     currentInput = '0';
                     calculating = false;
+                    usedMessages = [];
                     updateDisplay();
                 }, 4000);
             }, 10000);
         }
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (calculating) return;
+            
+            const key = e.key;
+            
+            if (/[0-9]/.test(key)) {
+                appendNumber(key);
+            } else if (key === '.') {
+                appendDecimal();
+            } else if (key === '+') {
+                appendOperator('+');
+            } else if (key === '-') {
+                appendOperator('−');
+            } else if (key === '*') {
+                appendOperator('×');
+            } else if (key === '/') {
+                e.preventDefault();
+                appendOperator('÷');
+            } else if (key === '%') {
+                appendOperator('%');
+            } else if (key === 'Enter' || key === '=') {
+                calculate();
+            } else if (key === 'Escape' || key === 'c' || key === 'C') {
+                clearDisplay();
+            } else if (key === 'Backspace') {
+                if (currentInput.length > 1) {
+                    currentInput = currentInput.slice(0, -1);
+                } else {
+                    currentInput = '0';
+                }
+                updateDisplay();
+            }
+        });
     </script>
 </body>
 </html>
