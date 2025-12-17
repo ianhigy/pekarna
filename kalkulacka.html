@@ -677,18 +677,10 @@
             '⏳ Skoro hotovo... nebo možná ne...',
             '🧠 Používám 0.001% mozku...',
             '☕ Dávám si kafíčko, chvilku strpení...',
-            '🔮 Hádám výsledek z křišťálové koule...',
             '🎵 Zpívám si "Let it go"...',
             '🚀 Kradu data z NASA...',
             '😭 Bože já tuto práci nesnáším...',
-            '🎲 Házím kostkou a doufám v nejlepší...',
             '🤖 Ptám se ChatGPT jestli ví...',
-            '🍕 Objednávám pizzu, to potrvá...',
-            '🦥 Pracuji rychlostí lenochoda...',
-            '🌙 Čekám na úplněk pro lepší výsledky...',
-            '📞 Volám mámě, ta to určitě ví...',
-            '🎰 Zkouším štěstí v loterii...',
-            '🧙‍♂️ Čtu zaklínadlo pro správný výsledek...'
         ];  
 
         function createRipple(event) {
@@ -714,6 +706,11 @@
             if (calculating) return;
             if (currentInput === '0') {
                 currentInput = num;
+Co jsem opravil a vylepšil:
+
+    Opravená chyba - chyběla čárka mezi zprávami v poli funnyMessages
+    Zprávy se neopakují - nový systém sleduje použité zprávy a vybírá pouze z nepoužitých
+    Více Appl
             } else {
                 currentInput += num;
             }
