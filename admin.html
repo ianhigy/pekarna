@@ -1,198 +1,1338 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin | Super Pekárna</title>
-  <link rel="icon" type="image/png" href="sp.webp">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root { --primary:#d4a373; --dark:#2c1a0d; --light:#faf7f2; }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Open Sans',sans-serif; background:var(--light); color:var(--dark); min-height:100vh; display:flex; flex-direction:column; }
-    
-    header { background:url('super-pekarna.png') center/cover; height:40vh; display:flex; align-items:center; justify-content:center; text-align:center; color:white; }
-    main { flex:1; padding:60px 20px; max-width:1300px; margin:0 auto; width:100%; }
-    h2 { text-align:center; font-family:'Playfair Display',serif; font-size:3.2rem; margin-bottom:2rem; color:var(--dark); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Super Pekárna</title>
+    <link rel="icon" href="sp.webp">
+    <link rel="apple-touch-icon" href="sp.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #d4a373;
+            --dark: #1a1a1a;
+            --light: #fafafa;
+            --accent: #e07a5f;
+            --gradient-warm: linear-gradient(135deg, #d4a373 0%, #e07a5f 100%);
+            --gradient-dark: linear-gradient(135deg, #2c1a0d 0%, #1a1a1a 100%);
+            --neon-glow: 0 0 20px rgba(212, 163, 115, 0.6), 0 0 40px rgba(212, 163, 115, 0.4), 0 0 60px rgba(212, 163, 115, 0.2);
+            --bg-dark: #0a0a0a;
+            --bg-light: #fafafa;
+        }
 
-    .admin-section { padding:40px; background:white; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); width:100%; max-width:600px; margin:0 auto; }
-    .form-group { margin-bottom:20px; }
-    .form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--dark); }
-    .form-group input { width:100%; padding:14px; border:2px solid #ddd; border-radius:10px; font-size:1rem; transition:border-color 0.3s; }
-    .form-group input:focus { outline:none; border-color:var(--primary); }
-    .login-btn { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
-    .login-btn:hover { background:#c28b55; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .error { color:#c0392b; font-weight:bold; margin-top:10px; padding:10px; background:#ffe6e6; border-radius:8px; display:none; }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    .ideas-section { display:none; margin-top:50px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+            transition: background 0.5s ease;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .idea-item { background:#f9f9f9; padding:20px; border-radius:10px; margin-bottom:15px; border-left:4px solid var(--primary); position:relative; }
-    .idea-item p { margin:8px 0; line-height:1.6; }
-    .idea-id { font-weight:700; color:var(--primary); font-size:0.9rem; margin-bottom:5px; }
-    .idea-name { font-weight:600; color:var(--dark); font-size:1.1rem; }
-    .idea-email { font-size:0.9rem; color:#666; }
-    .idea-text { margin-top:10px; color:var(--dark); font-style:italic; }
-    .idea-date { font-size:0.85rem; color:#999; margin-top:10px; }
-    .empty-ideas { text-align:center; padding:30px; color:#999; }
+        body.light-mode {
+            background: var(--bg-light);
+        }
 
-    .show-more-btn { width:auto; min-width:200px; margin:20px auto; padding:14px 30px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:1rem; font-weight:bold; cursor:pointer; transition:background 0.3s; }
-    .show-more-btn:hover { background:#c28b55; }
-    
-    .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); }
-    .modal.show { display:flex; align-items:center; justify-content:center; }
-    .modal-content { background:white; padding:40px; border-radius:20px; max-width:800px; width:90%; max-height:80vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
-    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; }
-    .modal-header h3 { font-family:'Playfair Display',serif; font-size:2rem; color:var(--dark); margin:0; }
-    .close-btn { background:none; border:none; font-size:2rem; color:#999; cursor:pointer; transition:color 0.3s; }
-    .close-btn:hover { color:var(--dark); }
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(rgba(212, 163, 115, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 163, 115, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    footer { background:var(--dark); color:#eee; text-align:center; padding:30px; font-size:0.95rem; margin-top:auto; }
-  </style>
+        body.light-mode .cyber-grid {
+            opacity: 0.5;
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .nav-menu {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            background: linear-gradient(135deg, #fff 0%, #d4a373 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.light-mode .nav-logo {
+            background: linear-gradient(135deg, #1a1a1a 0%, #d4a373 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+
+        body.light-mode .nav-links a {
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-warm);
+            transition: width 0.3s ease;
+            box-shadow: var(--neon-glow);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links .logout-link {
+            color: #e07a5f;
+            display: none;
+        }
+
+        .nav-links .logout-link.show {
+            display: block;
+        }
+
+        .nav-links .logout-link:hover {
+            color: #c0563f;
+        }
+
+        .nav-links .logout-link::after {
+            background: linear-gradient(135deg, #e07a5f 0%, #c0563f 100%);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-theme-toggle {
+            display: flex;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 4px;
+        }
+
+        body.light-mode .nav-theme-toggle {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-theme-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        body.light-mode .nav-theme-btn {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-theme-btn.active {
+            background: var(--gradient-warm);
+            color: white;
+            box-shadow: 0 4px 15px rgba(212, 163, 115, 0.5);
+        }
+
+        .nav-theme-btn:not(.active):hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-mode .nav-theme-btn:not(.active):hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        body.light-mode .mobile-menu-btn {
+            color: var(--dark);
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('super-pekarna.png');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-transition {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50vh;
+            background: linear-gradient(to top, var(--bg-dark) 0%, var(--bg-dark) 5%, rgba(10, 10, 10, 0.95) 15%, rgba(10, 10, 10, 0.8) 30%, rgba(10, 10, 10, 0.5) 50%, rgba(10, 10, 10, 0.2) 70%, transparent 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        body.light-mode .hero-transition {
+            background: linear-gradient(to top, var(--bg-light) 0%, var(--bg-light) 5%, rgba(250, 250, 250, 0.95) 15%, rgba(250, 250, 250, 0.8) 30%, rgba(250, 250, 250, 0.5) 50%, rgba(250, 250, 250, 0.2) 70%, transparent 100%);
+        }
+
+        main {
+            flex: 1;
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            text-align: center;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: var(--neon-glow);
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--gradient-warm);
+            margin: 20px auto 0;
+            border-radius: 2px;
+            box-shadow: var(--neon-glow);
+        }
+
+        body.light-mode .section-title {
+            color: var(--dark);
+            text-shadow: none;
+        }
+
+        body.light-mode .section-title::after {
+            box-shadow: none;
+        }
+
+        .admin-card {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 50px 40px;
+            max-width: 500px;
+            margin: 40px auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 163, 115, 0.2);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .admin-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 163, 115, 0.1), transparent 30%);
+            animation: rotate 10s linear infinite;
+            z-index: -1;
+        }
+
+        body.light-mode .admin-card {
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(212, 163, 115, 0.3);
+        }
+
+        .admin-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(212, 163, 115, 0.3);
+            border-color: rgba(212, 163, 115, 0.5);
+        }
+
+        .admin-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 24px;
+            color: var(--primary);
+            filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5));
+            animation: pulse-glow 2s ease-in-out infinite;
+            display: block;
+        }
+
+        body.light-mode .admin-icon {
+            filter: none;
+            animation: none;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+
+        body.light-mode .form-group label {
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(212, 163, 115, 0.3);
+            border-radius: 16px;
+            font-size: 1rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .form-group input {
+            background: rgba(0, 0, 0, 0.03);
+            border: 2px solid rgba(212, 163, 115, 0.3);
+            color: var(--dark);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        body.light-mode .form-group input::placeholder {
+            color: rgba(0, 0, 0, 0.4);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(212, 163, 115, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--gradient-warm);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(212, 163, 115, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 16px 48px rgba(212, 163, 115, 0.6);
+        }
+
+        .error-msg {
+            color: #e07a5f;
+            font-weight: 600;
+            margin-top: 16px;
+            padding: 14px 20px;
+            background: rgba(224, 122, 95, 0.1);
+            border: 1px solid rgba(224, 122, 95, 0.3);
+            border-radius: 12px;
+            display: none;
+            text-align: center;
+        }
+
+        .error-msg.show {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        .ideas-section {
+            display: none;
+        }
+
+        .ideas-section.show {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .idea-card {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(212, 163, 115, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            animation: slideInLeft 0.6s ease-out backwards;
+        }
+
+        .idea-card:nth-child(1) { animation-delay: 0.1s; }
+        .idea-card:nth-child(2) { animation-delay: 0.2s; }
+        .idea-card:nth-child(3) { animation-delay: 0.3s; }
+        .idea-card:nth-child(4) { animation-delay: 0.4s; }
+        .idea-card:nth-child(5) { animation-delay: 0.5s; }
+
+        body.light-mode .idea-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(212, 163, 115, 0.3);
+        }
+
+        .idea-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(212, 163, 115, 0.2);
+            border-color: rgba(212, 163, 115, 0.5);
+        }
+
+        .idea-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-warm);
+            border-radius: 4px 0 0 4px;
+        }
+
+        .idea-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .idea-id {
+            background: rgba(212, 163, 115, 0.2);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid rgba(212, 163, 115, 0.3);
+        }
+
+        .idea-date {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        body.light-mode .idea-date {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .idea-date svg {
+            width: 14px;
+            height: 14px;
+            color: var(--primary);
+        }
+
+        .idea-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: white;
+            margin-bottom: 6px;
+        }
+
+        body.light-mode .idea-name {
+            color: var(--dark);
+        }
+
+        .idea-email {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.light-mode .idea-email {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .idea-email svg {
+            width: 16px;
+            height: 16px;
+            color: var(--primary);
+        }
+
+        .idea-text {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 18px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+            line-height: 1.7;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        body.light-mode .idea-text {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        body.light-mode .empty-state {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .empty-state svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 16px;
+            color: rgba(212, 163, 115, 0.5);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .show-more-btn {
+            display: none;
+            margin: 30px auto;
+            padding: 16px 40px;
+            background: var(--gradient-warm);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 24px rgba(212, 163, 115, 0.4);
+        }
+
+        .show-more-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(212, 163, 115, 0.6);
+        }
+
+        .show-more-btn.show {
+            display: block;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 28px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 163, 115, 0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body.light-mode .modal-content {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+        }
+
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: white;
+            margin: 0;
+        }
+
+        body.light-mode .modal-header h3 {
+            color: var(--dark);
+        }
+
+        .close-modal-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .close-modal-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--dark);
+        }
+
+        .close-modal-btn:hover {
+            background: rgba(224, 122, 95, 0.2);
+            border-color: rgba(224, 122, 95, 0.4);
+            color: #e07a5f;
+            transform: rotate(90deg);
+        }
+
+        footer {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: auto;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(212, 163, 115, 0.2);
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        body.light-mode footer {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: var(--dark);
+            border-top: 1px solid rgba(212, 163, 115, 0.3);
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: var(--gradient-warm);
+            box-shadow: var(--neon-glow);
+        }
+
+        body.light-mode footer::before {
+            box-shadow: none;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #d4a373 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        body.light-mode .footer-logo {
+            background: linear-gradient(135deg, #1a1a1a 0%, #d4a373 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-text {
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+            animation: float-particle 15s ease-in-out infinite;
+        }
+
+        /* Animace */
+        @keyframes pulse-glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(212, 163, 115, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 30px rgba(212, 163, 115, 0.8));
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes float-particle {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-50px) translateX(-30px);
+                opacity: 0.3;
+            }
+            75% {
+                transform: translateY(-150px) translateX(20px);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                padding: 12px 16px;
+            }
+
+            .nav-logo {
+                font-size: 1.3rem;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 68px;
+                left: 0;
+                right: 0;
+                transform: none;
+                background: rgba(10, 10, 10, 0.95);
+                backdrop-filter: blur(20px);
+                padding: 20px;
+                border-bottom: 1px solid rgba(212, 163, 115, 0.2);
+                display: none;
+                animation: slideDown 0.3s ease-out;
+            }
+
+            body.light-mode .nav-center {
+                background: rgba(255, 255, 255, 0.95);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-center.active {
+                display: block;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .nav-links a {
+                animation: slideInRight 0.4s ease-out backwards;
+            }
+
+            .nav-links a:nth-child(1) { animation-delay: 0.1s; }
+            .nav-links a:nth-child(2) { animation-delay: 0.2s; }
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: transform 0.3s ease;
+            }
+
+            .mobile-menu-btn.active {
+                transform: rotate(90deg);
+            }
+
+            .hero {
+                height: 100svh;
+            }
+
+            .hero-transition {
+                height: 40vh;
+            }
+
+            main {
+                padding: 40px 16px;
+            }
+
+            .admin-card {
+                padding: 36px 24px;
+                margin: 30px 16px;
+                border-radius: 24px;
+            }
+
+            .admin-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .idea-card {
+                padding: 20px;
+                border-radius: 16px;
+            }
+
+            .idea-name {
+                font-size: 1.2rem;
+            }
+
+            .idea-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .modal {
+                padding: 16px;
+            }
+
+            .modal-content {
+                padding: 24px;
+                width: 100%;
+                max-height: 90vh;
+                border-radius: 20px;
+            }
+
+            .modal-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .show-more-btn {
+                padding: 14px 32px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .particle {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="cyber-grid"></div>
 
-<header></header>
+    <nav class="nav-menu">
+        <span class="nav-logo">Super Pekárna</span>
+        <div class="nav-center" id="navCenter">
+            <div class="nav-links">
+                <a href="https://super-pekarna.vercel.app">Hlavní stránka</a>
+                <a class="logout-link" id="logoutLink" onclick="logout()">Odhlásit se</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="nav-theme-toggle">
+                <button class="nav-theme-btn active" id="navDarkBtn" onclick="setTheme('dark')" aria-label="Tmavý režim">
+                    <i data-lucide="moon" style="width: 18px; height: 18px;"></i>
+                </button>
+                <button class="nav-theme-btn" id="navLightBtn" onclick="setTheme('light')" aria-label="Světlý režim">
+                    <i data-lucide="sun" style="width: 18px; height: 18px;"></i>
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Menu">
+                <i data-lucide="menu" id="menuIcon" style="width: 24px; height: 24px;"></i>
+            </button>
+        </div>
+    </nav>
 
-<main>
-  <div class="admin-section">
-    <h2 style="margin-bottom:20px; font-size:2rem;">Přihlášení</h2>
-    <div class="form-group">
-      <label>Heslo</label>
-      <input type="password" id="password" placeholder="Zadej heslo" required>
+    <section class="hero">
+        <div class="hero-transition"></div>
+    </section>
+
+    <main>
+        <div id="loginSection" class="admin-card">
+            <i data-lucide="lock" class="admin-icon"></i>
+            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 30px;">Přihlášení</h2>
+            <div class="form-group">
+                <label>Heslo</label>
+                <input type="password" id="password" placeholder="Zadej heslo" onkeypress="handleKeyPress(event)">
+            </div>
+            <button class="login-btn" onclick="checkPassword()">
+                Přihlásit se
+            </button>
+            <div id="errorMsg" class="error-msg">Špatné heslo!</div>
+        </div>
+
+        <div id="ideasSection" class="ideas-section">
+            <h2 class="section-title">Nové Nápady</h2>
+            <div id="pendingTab" style="margin-top: 40px;"></div>
+            <div style="text-align: center;">
+                <button id="showMoreBtn" class="show-more-btn" onclick="openModal()">
+                    Zobrazit více
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <div id="olderIdeasModal" class="modal" onclick="closeModalOnOutside(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Všechny nápady</h3>
+                <button class="close-modal-btn" onclick="closeModal()">
+                    <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+                </button>
+            </div>
+            <div id="olderIdeas"></div>
+        </div>
     </div>
-    <button class="login-btn" onclick="checkPassword()">Přihlásit se</button>
-    <div id="error" class="error"></div>
-  </div>
 
-  <div id="ideasSection" class="ideas-section">
-    <h2>Nové Nápady</h2>
-    <div id="pendingTab"></div>
-    <div style="text-align:center;">
-      <button id="showMoreBtn" class="show-more-btn" onclick="openModal()" style="display:none;">Zobrazit více</button>
-    </div>
-  </div>
+    <footer>
+        <div class="footer-logo">Super Pekárna</div>
+        <p class="footer-text">© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
+    </footer>
 
-  <div id="olderIdeasModal" class="modal" onclick="closeModalOnOutside(event)">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Všechny nápady</h3>
-        <button class="close-btn" onclick="closeModal()">&times;</button>
-      </div>
-      <div id="olderIdeas"></div>
-    </div>
-  </div>
+    <script>
+        lucide.createIcons();
 
-  <div style="text-align:center; margin-top:40px;">
-    <a href="index.html" style="color:var(--primary); font-weight:600; text-decoration:none;">Zpět na hlavní stránku</a>
-  </div>
-</main>
+        var PASSWORD = "StromecekJeMnam";
 
-<footer>
-  <p>© 2025 Super Pekárna – Vytvořeno s láskou a moukou Haluzákem</p>
-</footer>
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('navLightBtn').classList.add('active');
+                document.getElementById('navDarkBtn').classList.remove('active');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('navDarkBtn').classList.add('active');
+                document.getElementById('navLightBtn').classList.remove('active');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
 
-<script>
-  const PASSWORD = "MojeHeslo123";
+        function toggleMobileMenu() {
+            var navCenter = document.getElementById('navCenter');
+            var menuBtn = document.getElementById('mobileMenuBtn');
+            var menuIcon = document.getElementById('menuIcon');
+            var isActive = navCenter.classList.toggle('active');
+            menuBtn.classList.toggle('active');
 
-  window.onload = () => {
-    if (localStorage.getItem("adminLogged") === "true") {
-      document.querySelector(".admin-section").style.display = "none";
-      document.getElementById("ideasSection").style.display = "block";
-      loadIdeasFromGoogleSheets();
-    }
-  };
+            if (isActive) {
+                menuIcon.setAttribute('data-lucide', 'x');
+            } else {
+                menuIcon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
 
-  function checkPassword() {
-    const pass = document.getElementById("password").value;
-    const errorMsg = document.getElementById("error");
+        function closeMobileMenu() {
+            var navCenter = document.getElementById('navCenter');
+            var menuBtn = document.getElementById('mobileMenuBtn');
+            var menuIcon = document.getElementById('menuIcon');
+            navCenter.classList.remove('active');
+            menuBtn.classList.remove('active');
+            menuIcon.setAttribute('data-lucide', 'menu');
+            lucide.createIcons();
+        }
 
-    if (pass === PASSWORD) {
-      localStorage.setItem("adminLogged", "true");
-      document.querySelector(".admin-section").style.display = "none";
-      document.getElementById("ideasSection").style.display = "block";
-      errorMsg.style.display = "none";
-      loadIdeasFromGoogleSheets();
-    } else {
-      errorMsg.textContent = "Špatné heslo!";
-      errorMsg.style.display = "block";
-    }
-  }
+        var savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            setTheme('light');
+        }
 
-  function openModal() {
-    document.getElementById("olderIdeasModal").classList.add("show");
-    document.body.style.overflow = "hidden";
-  }
+        window.onload = function() {
+            if (localStorage.getItem("adminLogged") === "true") {
+                showIdeasSection();
+                loadIdeasFromGoogleSheets();
+            }
+        };
 
-  function closeModal() {
-    document.getElementById("olderIdeasModal").classList.remove("show");
-    document.body.style.overflow = "auto";
-  }
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
 
-  function closeModalOnOutside(event) {
-    if (event.target.id === "olderIdeasModal") {
-      closeModal();
-    }
-  }
+        function checkPassword() {
+            var pass = document.getElementById("password").value;
+            var errorMsg = document.getElementById("errorMsg");
 
-  function createIdeaHTML(row, index) {
-    const datum = row[0] || "";
-    const nazev = row[1] || "Neznámý";
-    const email = row[2] || "";
-    const popis = row[3] || "";
-    const ideaId = `IDEA-${String(index + 1).padStart(3, '0')}`;
+            if (pass === PASSWORD) {
+                localStorage.setItem("adminLogged", "true");
+                errorMsg.classList.remove('show');
+                showIdeasSection();
+                loadIdeasFromGoogleSheets();
+            } else {
+                errorMsg.classList.add('show');
+            }
+        }
 
-    return `
-      <div class="idea-item">
-        <p class="idea-id">${ideaId}</p>
-        <p class="idea-name">${nazev}</p>
-        <p class="idea-email">${email}</p>
-        <p class="idea-text">"${popis}"</p>
-        <p class="idea-date">${datum ? "Datum: " + datum : ""}</p>
-      </div>
-    `;
-  }
+        function showIdeasSection() {
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("ideasSection").classList.add("show");
+            document.getElementById("logoutLink").classList.add("show");
+        }
 
-  async function loadIdeasFromGoogleSheets() {
-    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
+        function logout() {
+            localStorage.removeItem("adminLogged");
+            document.getElementById("loginSection").style.display = "block";
+            document.getElementById("ideasSection").classList.remove("show");
+            document.getElementById("logoutLink").classList.remove("show");
+            document.getElementById("password").value = "";
+            document.getElementById("errorMsg").classList.remove("show");
+            closeMobileMenu();
+        }
 
-    try {
-      const response = await fetch(url);
-      const csv = await response.text();
+        function openModal() {
+            document.getElementById("olderIdeasModal").classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
 
-      const rows = csv.split("\n").map(r => r.split(","));
-      const list = document.getElementById("pendingTab");
-      const olderList = document.getElementById("olderIdeas");
-      const showMoreBtn = document.getElementById("showMoreBtn");
+        function closeModal() {
+            document.getElementById("olderIdeasModal").classList.remove("show");
+            document.body.style.overflow = "auto";
+        }
 
-      if (rows.length <= 1) {
-        list.innerHTML = '<div class="empty-ideas">Žádné nové nápady</div>';
-        showMoreBtn.style.display = "none";
-        return;
-      }
+        function closeModalOnOutside(event) {
+            if (event.target.id === "olderIdeasModal") {
+                closeModal();
+            }
+        }
 
-      const items = rows.slice(1).filter(r => r[0].trim() !== "");
+        function parseCSVRow(row) {
+            var result = [];
+            var current = '';
+            var inQuotes = false;
 
-      const recentItems = items.slice(0, 5);
-      list.innerHTML = recentItems.map((row, idx) => createIdeaHTML(row, idx)).join("");
+            for (var i = 0; i < row.length; i++) {
+                var char = row[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
 
-      const olderItems = items.slice(5);
-      if (olderItems.length > 0) {
-        olderList.innerHTML = olderItems.map((row, idx) => createIdeaHTML(row, idx + 5)).join("");
-        showMoreBtn.style.display = "inline-block";
-      } else {
-        showMoreBtn.style.display = "none";
-      }
+        function createIdeaHTML(row, index) {
+            var datum = row[0] || "";
+            var nazev = row[1] || "Neznámý";
+            var email = row[2] || "";
+            var popis = row[3] || "";
+            var ideaId = "IDEA-" + String(index + 1).padStart(3, '0');
 
-    } catch (err) {
-      console.error(err);
-      document.getElementById("pendingTab").innerHTML =
-        '<div class="empty-ideas">Chyba načítání Google Formuláře</div>';
-    }
-  }
-</script>
+            return '<div class="idea-card">' +
+                '<div class="idea-header">' +
+                '<span class="idea-id">' + ideaId + '</span>' +
+                '<span class="idea-date">' +
+                '<i data-lucide="calendar"></i>' +
+                (datum || "Neznámé datum") +
+                '</span>' +
+                '</div>' +
+                '<h3 class="idea-name">' + nazev + '</h3>' +
+                '<p class="idea-email">' +
+                '<i data-lucide="mail"></i>' +
+                (email || "Bez e-mailu") +
+                '</p>' +
+                '<div class="idea-text">"' + popis + '"</div>' +
+                '</div>';
+        }
 
+        async function loadIdeasFromGoogleSheets() {
+            var url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKMaRvR6ILGNUckV3pfQ8YMEv55-IM9C0Ndo_hrkTAxRl3TMvAEFUyZF0h7VZf4Rh3zHmbiFaw5q7_/pub?output=csv";
+
+            try {
+                var response = await fetch(url);
+                var csv = await response.text();
+                var rows = csv.split("\n").map(function(r) {
+                    return parseCSVRow(r);
+                });
+
+                var list = document.getElementById("pendingTab");
+                var olderList = document.getElementById("olderIdeas");
+                var showMoreBtn = document.getElementById("showMoreBtn");
+
+                if (rows.length <= 1) {
+                    list.innerHTML = '<div class="empty-state"><i data-lucide="inbox"></i><p>Žádné nové nápady</p></div>';
+                    showMoreBtn.classList.remove("show");
+                    lucide.createIcons();
+                    return;
+                }
+
+                var items = rows.slice(1).filter(function(r) {
+                    return r[0] && r[0].trim() !== "";
+                });
+
+                var recentItems = items.slice(0, 5);
+                list.innerHTML = recentItems.map(function(row, idx) {
+                    return createIdeaHTML(row, idx);
+                }).join("");
+
+                var olderItems = items.slice(5);
+                if (olderItems.length > 0) {
+                    olderList.innerHTML = olderItems.map(function(row, idx) {
+                        return createIdeaHTML(row, idx + 5);
+                    }).join("");
+                    showMoreBtn.classList.add("show");
+                } else {
+                    showMoreBtn.classList.remove("show");
+                }
+
+                lucide.createIcons();
+            } catch (err) {
+                console.error(err);
+                document.getElementById("pendingTab").innerHTML = '<div class="empty-state"><i data-lucide="alert-circle"></i><p>Chyba načítání dat</p></div>';
+                lucide.createIcons();
+            }
+        }
+
+        function createParticle() {
+            var particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            document.body.appendChild(particle);
+        }
+
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            for (var j = 0; j < 20; j++) createParticle();
+        }
+    </script>
 </body>
 </html>
